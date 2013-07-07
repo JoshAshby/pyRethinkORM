@@ -168,6 +168,9 @@ class RethinkModel(object):
             reply = r.table(self._table).insert(self._data,
                 durability=self._durability).run(self._conn)
 
+        if reply["generated_keys"]:
+            self._data[self._primaryKey] = reply["generated_keys"][0]
+
         if "errors" in reply and reply["errors"] > 0:
             raise Exception("Could not insert entry: %s" % reply["first_error"])
 
