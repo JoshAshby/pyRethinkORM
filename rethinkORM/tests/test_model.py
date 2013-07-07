@@ -30,15 +30,23 @@ def teardown():
     r.db_drop("model").run()
 
 
-dhdProp = None
 def insert_test():
     dhdProp = gateModel(what="DHD", description="Dial Home Device",
         planet="P3X-439", id="P3X-439-DHD")
     assert dhdProp.save()
 
+def modify_test():
+    dhdProp = gateModel(id="P3X-439-DHD")
+    dhdProp.what = "DHD P3X-439"
+    dhdProp.description = """Dial Home Device from the planel P3X-439, where an
+    Ancient Repository of Knowledge was found, and interfaced with by Colonel
+    Jack."""
+    dhdProp.episode = ["Lost City, Part 1"]
+    assert dhdProp.save()
+
 def delete_test():
-    newDhdProp = gateModel(id="P3X-439-DHD")
-    newDhdProp.delete()
+    dhdProp = gateModel(id="P3X-439-DHD")
+    assert dhdProp.delete()
 
 @nst.raises(Exception)
 def insertBadId_test():

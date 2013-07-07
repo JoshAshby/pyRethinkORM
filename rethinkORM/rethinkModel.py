@@ -42,17 +42,16 @@ class RethinkModel(object):
         if hasattr(kwargs, "conn") or hasattr(kwargs, "connection"):
             self._conn = kwargs["conn"]
 
-        whatToDo = False
-
+        didWeGetData = False
         if self._primaryKey in kwargs and kwargs[self._primaryKey] != None:
             key = kwargs[self._primaryKey]
-            whatToDo = self._grabData(key)
+            didWeGetData = self._grabData(key)
 
         # This is a no-no
         elif self._primaryKey in kwargs and kwargs[self._primaryKey] == None:
             raise Exception("%s supplied but with type `None`" % self._primaryKey)
 
-        if not whatToDo:
+        if not didWeGetData:
             # We assume this is a new object, and that we'll insert it
             for key in kwargs:
                 if key not in ["conn", "connection"] or key[0] != "_":
@@ -185,3 +184,4 @@ class RethinkModel(object):
                 stored." % self._primaryKey)
 
         r.table(self._table).get(self._data[self._primaryKey]).delete(durability=self._durability).run(self._conn)
+        return True
