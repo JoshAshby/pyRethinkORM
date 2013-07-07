@@ -11,7 +11,6 @@ http://joshashby.com
 joshuaashby@joshashby.com
 """
 import rethinkdb as r
-import json
 
 
 class RethinkModel(object):
@@ -142,7 +141,9 @@ class RethinkModel(object):
 
         :return: `cls` instance of the given `id` entry
         """
-        return cls(id=id)
+        key = cls._primaryKey
+        data = {key: id}
+        return cls(**data)
 
     def save(self):
         """
@@ -153,10 +154,11 @@ class RethinkModel(object):
         """
         if self._primaryKey in self._data:
             reply = r.table(self._table).update(self._data,
-                durability=self._durability, non_atomic=self._non_atomic)
+                durability=self._durability,
+                non_atomic=self._non_atomic).run(self._conn)
         else:
             reply = r.table(self._table).insert(self._data,
-                durability=self._durability)
+                durability=self._durability).run(self._conn)
 
         if "errors" in reply and reply["errors"] > 0:
             raise Exception("Could not insert entry: %s" % reply["first_error"])
@@ -173,4 +175,4 @@ class RethinkModel(object):
             raise Exception("%s not in data, indicating this entry isn't \
                 stored." % self._primaryKey)
 
-        r.table(self._table).get(self._data[self._primaryKey]).delete(durability=self._durability)
+        r.table(self._table).get(self._data[self._primaryKey]).delete(durability=self._durability).run(self._conn)
