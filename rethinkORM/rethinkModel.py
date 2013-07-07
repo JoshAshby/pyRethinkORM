@@ -42,16 +42,17 @@ class RethinkModel(object):
         if hasattr(kwargs, "conn") or hasattr(kwargs, "connection"):
             self._conn = kwargs["conn"]
 
+        whatToDo = False
+
         if self._primaryKey in kwargs and kwargs[self._primaryKey] != None:
             key = kwargs[self._primaryKey]
-            rawCursor = r.table(self._table).get(key).run(self._conn)
-            self._data = [ item for item in rawCursor ][0]
+            whatToDo = self._grabData(key)
 
         # This is a no-no
         elif self._primaryKey in kwargs and kwargs[self._primaryKey] == None:
             raise Exception("%s supplied but with type `None`" % self._primaryKey)
 
-        else:
+        if not whatToDo:
             # We assume this is a new object, and that we'll insert it
             for key in kwargs:
                 if key not in ["conn", "connection"] or key[0] != "_":
@@ -59,6 +60,14 @@ class RethinkModel(object):
 
         # Hook to run any inherited class code, if needed
         self._finishInit()
+
+    def _grabData(self, key):
+        rawCursor = r.table(self._table).get(key).run(self._conn)
+        if rawCursor:
+            self._data = [ item for item in rawCursor ][0]
+            return True
+        else:
+            return False
 
     def _finishInit(self):
         """

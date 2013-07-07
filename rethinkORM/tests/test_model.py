@@ -29,13 +29,17 @@ def setup():
 def teardown():
     r.db_drop("model").run()
 
-#@nst.with_setup(setup, teardown)
+
+dhdProp = None
 def insert_test():
     dhdProp = gateModel(what="DHD", description="Dial Home Device",
-        planet="P3X-439")
+        planet="P3X-439", id="P3X-439-DHD")
     assert dhdProp.save()
 
-#@nst.raises(rerr.RqlRuntimeError)
+def delete_test():
+    newDhdProp = gateModel(id="P3X-439-DHD")
+    newDhdProp.delete()
+
 @nst.raises(Exception)
 def insertBadId_test():
     oldProp = gateModel(id=None, what="Something?")
