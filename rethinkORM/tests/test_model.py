@@ -31,8 +31,7 @@ def setup():
     r.table_create("stargate").run()
 
 def teardown():
-    #r.db_drop("model").run()
-    pass
+    r.db_drop("model").run()
 
 
 class gateModel(rdbm.RethinkModel):
@@ -60,7 +59,6 @@ def insert_test():
 
 def load_insert_test():
     dhdProp = gateModel.load(data["id"])
-    print dhdProp
     assert dhdProp.id == data["id"]
     assert dhdProp.what == "DHD"
     assert dhdProp.planet == data["planet"]

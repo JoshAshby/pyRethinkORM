@@ -64,7 +64,7 @@ class RethinkModel(object):
     def _grabData(self, key):
         rawCursor = r.table(self._table).get(key).run(self._conn)
         if rawCursor:
-            self._data = [ item for item in rawCursor ][0]
+            self._data = rawCursor
             self._new = False
             return True
         else:
