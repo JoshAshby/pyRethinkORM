@@ -35,6 +35,7 @@ class RethinkModel(object):
         (Optional, only if not using .repl()) `conn` or `connection` can also
         be passed, which will be used in all the .run() clauses.
         """
+        self._new = True
         self._data = {}
 
         # If we're given a connection, we'll use it, if not, we'll assume
@@ -64,6 +65,7 @@ class RethinkModel(object):
         rawCursor = r.table(self._table).get(key).run(self._conn)
         if rawCursor:
             self._data = [ item for item in rawCursor ][0]
+            self._new = False
             return True
         else:
             return False
@@ -140,6 +142,7 @@ class RethinkModel(object):
         """
         return cls(**kwargs)
 
+    @classmethod
     def load(cls, id):
         """
         Loads an existing entry.
@@ -160,7 +163,7 @@ class RethinkModel(object):
         id's on new objects, but that could be solved by setting a `_new`
         property or something.
         """
-        if self._primaryKey in self._data:
+        if not self._new:
             reply = r.table(self._table).update(self._data,
                 durability=self._durability,
                 non_atomic=self._non_atomic).run(self._conn)
@@ -168,7 +171,7 @@ class RethinkModel(object):
             reply = r.table(self._table).insert(self._data,
                 durability=self._durability).run(self._conn)
 
-        if reply["generated_keys"]:
+        if reply.has_key("generated_keys") and reply["generated_keys"]:
             self._data[self._primaryKey] = reply["generated_keys"][0]
 
         if "errors" in reply and reply["errors"] > 0:
@@ -188,3 +191,10 @@ class RethinkModel(object):
 
         r.table(self._table).get(self._data[self._primaryKey]).delete(durability=self._durability).run(self._conn)
         return True
+
+    def __repr__(self):
+        return "< RethinkModel data: %s >" % self._data
+
+    # Does this work? O.o
+    #def __json__(self):
+        #return self._data
