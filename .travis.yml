@@ -1,0 +1,17 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+
+before_install:
+ - sudo apt-get update -qq
+ - sudo apt-get install rethinkdb
+
+install:
+  - "pip install . --use-mirrors"
+  - "pip install -r requirements.txt --use-mirrors"
+
+#will this work?
+before_script: rethinkdb &
+
+script: nosetests rethinkORM/tests

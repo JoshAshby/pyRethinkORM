@@ -5,13 +5,14 @@ setup(
     version='0.1.0',
     author='Joshua P Ashby',
     author_email='joshuaashby@joshashby.com',
-    packages=['rethinkORM', 'rethinkORM.test'],
+    packages=['rethinkORM', 'rethinkORM.tests'],
     scripts=[],
     url='https://github.com/JoshAshby/pyRethinkORM',
     license='LICENSE.txt',
     description='Useful little ORM style wrapper for working with RethinkDB',
     long_description=open('README.rst').read(),
     install_requires=[
-        "rethinkdb >= 1.7.0"
+        "rethinkdb >= 1.7.0",
+        "nose >= 1.3.0"
     ],
 )
