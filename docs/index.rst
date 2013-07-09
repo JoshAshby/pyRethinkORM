@@ -12,7 +12,9 @@ RethinkDB easier, and in a more Pythonic way.
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
+
+   rethinkORM
 
 
 

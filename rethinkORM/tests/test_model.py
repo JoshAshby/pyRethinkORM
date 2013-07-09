@@ -1,16 +1,8 @@
 #!/usr/bin/env python
 """
-ALL THE TESTS!!!
-
-http://xkcd.com/353/
-
-Josh Ashby
-2013
-http://joshashby.com
-joshuaashby@joshashby.com
+Test suite for the model
 """
 import rethinkdb as r
-#import rethinkdb.errors as err
 import nose.tools as nst
 
 from rethinkORM import RethinkModel
@@ -52,6 +44,7 @@ data = {
     "planet": "P3X-439",
     "episodes": ["Lost City, Part 1"],
     }
+
 def insert_test():
     dhdProp = gateModel(what="DHD", description="Dial Home Device",
         planet=data["planet"], id=data["id"])
@@ -87,9 +80,9 @@ def delete_test():
     assert dhdProp.delete()
     del dhdProp
 
-#@nst.raises()
 def load_delete_test():
     dhdProp = gateModel(id=data["id"])
+    assert not hasattr(dhdProp, "what")
 
 """
 ------------------------------------------------

@@ -1,14 +1,7 @@
 #!/usr/bin/env python
 """
 ORM style interface for working with RethinkDB and having a native wrapper and
-    some helper functions
-
-http://xkcd.com/353/
-
-Josh Ashby
-2013
-http://joshashby.com
-joshuaashby@joshashby.com
+    some helper functions for working with the wrapper.
 """
 import rethinkdb as r
 
