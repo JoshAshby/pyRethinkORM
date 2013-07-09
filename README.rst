@@ -104,8 +104,7 @@ Python `nose <https://github.com/nose-devs/nose>`__ installed.
 
 ::
 
-    cd rethinkORM  
-    nosetests -s tests/test_model.py -v
+    nosetests -s rethinkORM/tests -v
 
 This will run the tests, not capturing ``stdout`` and being verbose, in
 case anything goes wrong, or if you modify the tests. Please note, tests
