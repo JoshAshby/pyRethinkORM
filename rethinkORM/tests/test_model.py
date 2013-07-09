@@ -10,9 +10,10 @@ http://joshashby.com
 joshuaashby@joshashby.com
 """
 import rethinkdb as r
-import rethinkdb.errors as rerr
+#import rethinkdb.errors as err
 import nose.tools as nst
-import rethinkModel as rdbm
+
+from rethinkORM import RethinkModel
 
 
 """
@@ -34,7 +35,7 @@ def teardown():
     r.db_drop("model").run()
 
 
-class gateModel(rdbm.RethinkModel):
+class gateModel(RethinkModel):
     _table = "stargate"
 
 
