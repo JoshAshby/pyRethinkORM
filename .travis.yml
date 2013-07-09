@@ -4,14 +4,14 @@ python:
   - "2.7"
 
 before_install:
- - sudo apt-get update -qq
- - sudo apt-get install rethinkdb
+  - sudo add-apt-repository ppa:rethinkdb/ppa
+  - sudo apt-get update -qq
+  - sudo apt-get install rethinkdb
 
 install:
-  - "pip install . --use-mirrors"
-  - "pip install -r requirements.txt --use-mirrors"
+  - pip install . --use-mirrors
+  - pip install -r requirements.txt --use-mirrors
 
-#will this work?
-before_script: rethinkdb &
+before_script: rethinkdb --daemon
 
 script: nosetests rethinkORM/tests

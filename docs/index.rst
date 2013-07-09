@@ -30,8 +30,8 @@ for this module. If someone wants to make this more standardized feel
 free to, and just submit a pull request, I'll look it over and probably
 will give it the go ahead.
 
-Wll... How do you use it?
-----
+Well... How do you use it?
+-------------------------
 
 First we need to make an object which will represent all of our data in
 a specific table:
@@ -139,7 +139,6 @@ Contents:
    :maxdepth: 4
 
    rethinkORM
-
 
 
 Indices and tables

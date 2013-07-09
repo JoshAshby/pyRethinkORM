@@ -5,12 +5,8 @@ rethinkORM Package
 --------------------------
 
 .. automodule:: rethinkORM.rethinkModel
-    :members:
-    :inherited-members:
-    :private-members:
-    :special-members:
+    :members: __init__, _finishInit, __delitem__, __contains__, new, load, save, delete, __repr__
     :undoc-members:
-    :show-inheritance:
 
 Subpackages
 -----------

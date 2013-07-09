@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 """
 ORM style interface for working with RethinkDB and having a native wrapper and
-    some helper functions for working with the wrapper.
+    some helper functions for working with the wrapper. This module contains
+    the base model which should be inherited.
 """
 import rethinkdb as r
 
@@ -9,15 +10,25 @@ import rethinkdb as r
 class RethinkModel(object):
     """
     Emulates a python object for the  data which is returned from rethinkdb and
-    the official Python client driver.
+    the official Python client driver. Raw data from the database is stored in
+    _data to keep the objects namespace clean. For more information look at how
+    _get() and _set() function in order to keep the namespace cleaner but still
+    provide easy access to data.
+
+    This object has a __repr__ method which can be used with print or logging
+    statements. It will give the id and a representation of the internal _data
+    dict for debugging purposes.
     """
-    _protectedItems = []
-    _table = ""
-    _primaryKey = "id"
+
+    _protectedItems = [] # Strings of the names of properties to not store
+    _table = "" # The table which this document object will be stored in
+    _primaryKey = "id" # The current primary key of the table
     _conn = None
 
-    _durability = "soft"
-    _non_atomic = False
+    _durability = "soft" # Can either be Hard or Soft, and is passed to RethinkDB
+    _non_atomic = False # Determins if the transaction can be non atomic or not
+
+    _upsert = True # Will either update, or create a new object if true and a primary key is given.
 
     def __init__(self, **kwargs):
         """
@@ -28,8 +39,8 @@ class RethinkModel(object):
         (Optional, only if not using .repl()) `conn` or `connection` can also
         be passed, which will be used in all the .run() clauses.
         """
-        self._new = True
-        self._data = {}
+        self._new = True # Is this a new object, or already in the database? (set later)
+        self._data = {} # STORE ALL THE DATA!!
 
         # If we're given a connection, we'll use it, if not, we'll assume
         # .repl() was called on r.connect()
@@ -37,7 +48,8 @@ class RethinkModel(object):
             self._conn = kwargs["conn"]
 
         didWeGetData = False
-        if self._primaryKey in kwargs and kwargs[self._primaryKey] != None:
+        if self._primaryKey in kwargs and kwargs[self._primaryKey] != None \
+            and self._upsert:
             key = kwargs[self._primaryKey]
             didWeGetData = self._grabData(key)
 
@@ -55,6 +67,17 @@ class RethinkModel(object):
         self._finishInit()
 
     def _grabData(self, key):
+        """
+        Tries to find the existing document in the database, if it is found,
+        then the objects _data is set to that document, and this returns
+        `True`, otherwise this will return `False`
+
+        :param key: The primary key of the object we're looking for
+        :type key: Str
+
+        :return: True if a document was found, otherwise False
+        :rtype: Boolean
+        """
         rawCursor = r.table(self._table).get(key).run(self._conn)
         if rawCursor:
             self._data = rawCursor
@@ -65,8 +88,11 @@ class RethinkModel(object):
 
     def _finishInit(self):
         """
-        A hook called at the end of the main ``__init__` to allow for
-        custom inherited classes to customize their init.
+        A hook called at the end of the main `__init__` to allow for
+        custom inherited classes to customize their init process without having
+        to redo all of the existing int.
+        This should accept nothing besides `self` and nothing should be
+        returned.
         """
         pass
 
@@ -87,7 +113,7 @@ class RethinkModel(object):
         Helper function to keep the __setattr__ and __setitem__ calls
         KISSish
 
-        Will only set the objects data if the given items name is not prefixed
+        Will only set the objects _data if the given items name is not prefixed
         with _ or if the item exists in the protected items List.
         """
         if item not in object.__getattribute__(self, "_protectedItems") \
@@ -114,6 +140,10 @@ class RethinkModel(object):
         return self._set(item, value)
 
     def __delitem__(self, item):
+        """
+        Deletes the given item from the objects _data dict, or if from the
+        objects namespace, if it does not exist in _data.
+        """
         keys = object.__getattribute__(self, "_data")
         if item in keys:
             del(keys[item])
@@ -121,6 +151,12 @@ class RethinkModel(object):
             object.__delitem__(self, item)
 
     def __contains__(self, item):
+        """
+        Allows for the use of syntax similar to:
+          `if "blah" in model:`
+        This only works with the internal _data, and does not include other
+        properties in the objects namepsace.
+        """
         keys = object.__getattribute__(self, "_data")
         if item in keys:
             return True
@@ -131,7 +167,8 @@ class RethinkModel(object):
         """
         Gathers, or creates a new record with the given kwargs. If `id`
         exists in `kwargs` then this will assume that your pulling an existing
-        entry from the database
+        entry from the database. See __init__ doc for more information about
+        the creation of a new object.
         """
         return cls(**kwargs)
 
@@ -153,8 +190,9 @@ class RethinkModel(object):
         """
         If an id exists in the database, we assume we'll update it, and if not
         then we'll insert it. This could be a problem with creating your own
-        id's on new objects, but that could be solved by setting a `_new`
-        property or something.
+        id's on new objects, however luckly, we keep track of if this is a new
+        object through a private _new variable, and use that to determine if we
+        insert or update.
         """
         if not self._new:
             reply = r.table(self._table).update(self._data,
@@ -163,6 +201,7 @@ class RethinkModel(object):
         else:
             reply = r.table(self._table).insert(self._data,
                 durability=self._durability).run(self._conn)
+            self._new = False
 
         if reply.has_key("generated_keys") and reply["generated_keys"]:
             self._data[self._primaryKey] = reply["generated_keys"][0]
@@ -178,16 +217,21 @@ class RethinkModel(object):
         doing, and have a primary key in our data already. If this is a new
         instance, then we'll let the user know with an Exception
         """
-        if self._primaryKey not in self._data:
-            raise Exception("%s not in data, indicating this entry isn't \
-                stored." % self._primaryKey)
+        #if self._primaryKey not in self._data:
+        if self._new:
+            raise Exception("This is a new object, %s not in data, \
+            indicating this entry isn't stored." % self._primaryKey)
 
         r.table(self._table).get(self._data[self._primaryKey]).delete(durability=self._durability).run(self._conn)
         return True
 
     def __repr__(self):
-        return "< RethinkModel data: %s >" % self._data
+        """
+        Allows for the representation of the object, for debugging purposes
+        """
+        return "< RethinkModel at %s with data: %s >" % (id(self), self._data)
 
-    # Does this work? O.o
+    # Does this work? O.o wondering how to go about doing a custom json
+    # interface, if thats possible
     #def __json__(self):
         #return self._data
