@@ -23,6 +23,7 @@ virt/
 .envrc
 RethinkCollection.py
 rethinkdb_data
+docs/_build
 
 # Compiled source #
 ###################
