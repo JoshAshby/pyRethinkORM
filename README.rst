@@ -1,6 +1,9 @@
 PyRethinkORM
 ============
 
+.. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=master
+        :target: http://travis-ci.org/JoshAshby/pyRethinkORM
+
 | 2013 Joshua Ashby
 | joshuaashby (at) joshashby.com
 
@@ -36,7 +39,8 @@ a specific table:
 
 ::
 
-    class tvProps(rdbm.RethinkModel):
+    from rethinkORM import RethinkModel
+    class tvProps(RethinkModel):
         _table = "stargate_props"
 
 Object properties such as ``_primaryKey`` ``_protectedItems``
