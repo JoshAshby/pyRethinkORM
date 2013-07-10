@@ -20,15 +20,20 @@ class RethinkModel(object):
     dict for debugging purposes.
     """
 
-    _protectedItems = [] # Strings of the names of properties to not store
-    _table = "" # The table which this document object will be stored in
-    _primaryKey = "id" # The current primary key of the table
+    _protectedItems = []  #: Strings of the names of properties to not store
+    _table = ""  #: The table which this document object will be stored in
+    _primaryKey = "id"  #: The current primary key of the table
     _conn = None
 
-    _durability = "soft" # Can either be Hard or Soft, and is passed to RethinkDB
-    _non_atomic = False # Determins if the transaction can be non atomic or not
+    _durability = "soft"
+    """Can either be Hard or Soft, and is passed to RethinkDB"""
 
-    _upsert = True # Will either update, or create a new object if true and a primary key is given.
+    _non_atomic = False
+    """Determins if the transaction can be non atomic or not"""
+
+    _upsert = True
+    """Will either update, or create a new object if true and a primary key is
+    given."""
 
     def __init__(self, **kwargs):
         """
@@ -39,8 +44,10 @@ class RethinkModel(object):
         (Optional, only if not using .repl()) `conn` or `connection` can also
         be passed, which will be used in all the .run() clauses.
         """
-        self._new = True # Is this a new object, or already in the database? (set later)
-        self._data = {} # STORE ALL THE DATA!!
+
+        # Is this a new object, or already in the database? (set later)
+        self._new = True
+        self._data = {}  # STORE ALL THE DATA!!
 
         # If we're given a connection, we'll use it, if not, we'll assume
         # .repl() was called on r.connect()
@@ -48,14 +55,15 @@ class RethinkModel(object):
             self._conn = kwargs["conn"]
 
         didWeGetData = False
-        if self._primaryKey in kwargs and kwargs[self._primaryKey] != None \
-            and self._upsert:
+        if self._primaryKey in kwargs \
+           and kwargs[self._primaryKey] is not None and self._upsert:
             key = kwargs[self._primaryKey]
             didWeGetData = self._grabData(key)
 
         # This is a no-no
-        elif self._primaryKey in kwargs and kwargs[self._primaryKey] == None:
-            raise Exception("%s supplied but with type `None`" % self._primaryKey)
+        elif self._primaryKey in kwargs and kwargs[self._primaryKey] is None:
+            raise Exception("%s supplied but with type `None`"
+                            % self._primaryKey)
 
         if not didWeGetData:
             # We assume this is a new object, and that we'll insert it
@@ -197,19 +205,22 @@ class RethinkModel(object):
         insert or update.
         """
         if not self._new:
-            reply = r.table(self._table).update(self._data,
-                durability=self._durability,
-                non_atomic=self._non_atomic).run(self._conn)
+            reply = r.table(self._table) \
+                .update(self._data,
+                        durability=self._durability,
+                        non_atomic=self._non_atomic).run(self._conn)
         else:
-            reply = r.table(self._table).insert(self._data,
-                durability=self._durability).run(self._conn)
+            reply = r.table(self._table) \
+                .insert(self._data, durability=self._durability) \
+                .run(self._conn)
             self._new = False
 
-        if reply.has_key("generated_keys") and reply["generated_keys"]:
+        if "generated_keys" in reply and reply["generated_keys"]:
             self._data[self._primaryKey] = reply["generated_keys"][0]
 
         if "errors" in reply and reply["errors"] > 0:
-            raise Exception("Could not insert entry: %s" % reply["first_error"])
+            raise Exception("Could not insert entry: %s"
+                            % reply["first_error"])
 
         return True
 
@@ -224,7 +235,8 @@ class RethinkModel(object):
             raise Exception("This is a new object, %s not in data, \
             indicating this entry isn't stored." % self._primaryKey)
 
-        r.table(self._table).get(self._data[self._primaryKey]).delete(durability=self._durability).run(self._conn)
+        r.table(self._table).get(self._data[self._primaryKey]) \
+            .delete(durability=self._durability).run(self._conn)
         return True
 
     def __repr__(self):

@@ -1,12 +1,12 @@
 from distutils.core import setup
+import rethinkORM
 
 setup(
     name='RethinkORM',
-    version='0.1.0',
+    version=rethinkORM.__version__,
     author='Joshua P Ashby',
     author_email='joshuaashby@joshashby.com',
     packages=['rethinkORM', 'rethinkORM.tests'],
-    scripts=[],
     url='https://github.com/JoshAshby/pyRethinkORM',
     license='LICENSE.txt',
     description='Useful little ORM style wrapper for working with RethinkDB',

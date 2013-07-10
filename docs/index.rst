@@ -1,10 +1,5 @@
-.. RethinkORM documentation master file, created by
-   sphinx-quickstart on Mon Jul  8 22:56:50 2013.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-RethinkORM
-==========
+RethinkORM: Introduction
+========================
 
 .. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=master
         :target: http://travis-ci.org/JoshAshby/pyRethinkORM
@@ -18,6 +13,12 @@ Python ``List`` or ``Dict`` rather than a full wrapper class. So I
 figured a good way to learn the general use of the Python RethinkDB
 driver was to write a general wrapper class that functioned a bit like
 an ORM, providing some easier to work with data and objects.
+
+Unittests are included, and the code should be `PEP8 
+<http://www.python.org/dev/peps/pep-0008/>`__ compliant. The tests are
+automatically ran each commit, thanks to `travis-ci.org
+<http://travis-ci.org>`__ and this documentation is kindly hosted and
+automatically rebuilt by `readthedocs.org <http://readthedocs.org>`__.
 
 A Few Minor Warnings
 --------------------
@@ -53,24 +54,9 @@ a specific table, along with getting a connection to RethinkDB started.
     class tvProps(RethinkModel):
         _table = "stargate_props"
 
-Object properties such as ``_primaryKey`` ``_protectedItems``
-``_dirability`` and ``_non_atomic`` can also be set here, or per object
-once initialized.
 
-Any property or function which is added to the model, can be prefixed
-with a ``_`` to avoid having it inserted into the database, or it can be
-added to the ``list`` ``_protectedItems``.
-
-When initializing a new object, keyword arguments are assumed to be data
-for the model, unless they fit the above "protected items" pattern. If
-the ``_primaryKey`` is passed in while initializing, then the model will
-assume we're grabbing an existing entry and try to get that entry from
-the database, if none is found then it will act like a new entry.
-
-By default ``_primaryKey`` is set to ``id`` however if you changed what
-the primary index of your table is, this property should match that
-index's name.
-
+For more information on what class properties are available to change, see
+:ref:`rethinkORM`
 
 Inserting/creating an entry
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -126,4 +112,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

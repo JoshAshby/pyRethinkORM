@@ -16,6 +16,8 @@ connection, making a test database, and later destroying that test database.
 
 gateModel is the test object that we'll be working with
 """
+
+
 def setup():
     """
     Sets up the connection to RethinkDB which we'll use in the rest of the
@@ -29,6 +31,7 @@ def setup():
     conn.use("model")
     conn.repl()
     r.table_create("stargate").run()
+
 
 def teardown():
     """
@@ -51,6 +54,7 @@ class gateModel(RethinkModel):
 Start Unittests
 """
 
+
 # Sample data to use as a comparison as we test the model
 data = {
     "what": "DHD",
@@ -62,14 +66,17 @@ data = {
     "episodes": ["Lost City, Part 1"],
     }
 
+
 def insert_test():
     """
     Creates a new object, and inserts it, using `.save()`
     """
     dhdProp = gateModel(what="DHD", description="Dial Home Device",
-        planet=data["planet"], id=data["id"])
+                        planet=data["planet"],
+                        id=data["id"])
     assert dhdProp.save()
     del dhdProp
+
 
 def load_insert_test():
     """
@@ -82,6 +89,7 @@ def load_insert_test():
     assert dhdProp.planet == data["planet"]
     del dhdProp
 
+
 def modify_test():
     """
     Next, we get the object again, and this time, we modify it, and save it.
@@ -92,6 +100,7 @@ def modify_test():
     dhdProp.episodes = data["episodes"]
     assert dhdProp.save()
     del dhdProp
+
 
 def load_modify_test():
     """
@@ -106,6 +115,7 @@ def load_modify_test():
     assert dhdProp.description == data["description"]
     del dhdProp
 
+
 def delete_test():
     """
     Finally, we delete it from the table.
@@ -113,6 +123,7 @@ def delete_test():
     dhdProp = gateModel(id=data["id"])
     assert dhdProp.delete()
     del dhdProp
+
 
 def load_delete_test():
     """
@@ -122,6 +133,7 @@ def load_delete_test():
     dhdProp = gateModel(id=data["id"])
     assert not hasattr(dhdProp, "what")
 
+
 """
 ------------------------------------------------
 Exception raising tests. These should raise an exception of some sort, and if
@@ -129,6 +141,8 @@ they don't, then we should fail the test.
 
 Use of @nst.raises() from nose.tools is highly recommended.
 """
+
+
 @nst.raises(Exception)
 def insertBadId_test():
     """
