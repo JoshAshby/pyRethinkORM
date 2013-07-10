@@ -1,6 +1,8 @@
 RethinkORM: Introduction
 ========================
 
+Build status:
+
 .. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=master
         :target: http://travis-ci.org/JoshAshby/pyRethinkORM
 
@@ -19,6 +21,15 @@ Unittests are included, and the code should be `PEP8
 automatically ran each commit, thanks to `travis-ci.org
 <http://travis-ci.org>`__ and this documentation is kindly hosted and
 automatically rebuilt by `readthedocs.org <http://readthedocs.org>`__.
+
+Gittip if you like the work I do and would consider a small donation to help
+fund me and this project:
+
+.. raw:: html
+
+    <iframe style="border: 0; margin: 0; padding: 0;"
+        src="https://www.gittip.com/JoshAshby/widget.html"
+        width="48pt" height="22pt"></iframe>
 
 A Few Minor Warnings
 --------------------
