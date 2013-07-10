@@ -24,6 +24,8 @@ virt/
 RethinkCollection.py
 rethinkdb_data
 docs/_build
+dist
+MANIFEST
 
 # Compiled source #
 ###################
