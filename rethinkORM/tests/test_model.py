@@ -131,6 +131,11 @@ Use of @nst.raises() from nose.tools is highly recommended.
 """
 @nst.raises(Exception)
 def insertBadId_test():
+    """
+    Here we test to make sure that if we give a primary key of type `None`
+    that we are raising an exception, if we don't get an exception then
+    something is wrong since the primary key shouldn't be allowed to be `None`
+    """
     oldProp = gateModel(id=None, what="Something?")
     assert oldProp.save()
     del oldProp
