@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
 ORM style interface for working with RethinkDB and having a native wrapper and
-    some helper functions for working with the wrapper. This module contains
-    the base model which should be inherited.
+some helper functions for working with the wrapper. This module contains
+the base model which should be inherited.
 """
 import rethinkdb as r
 
@@ -152,8 +152,10 @@ class RethinkModel(object):
 
     def __contains__(self, item):
         """
-        Allows for the use of syntax similar to:
-          `if "blah" in model:`
+        Allows for the use of syntax similar to::
+
+            if "blah" in model:
+
         This only works with the internal _data, and does not include other
         properties in the objects namepsace.
         """
