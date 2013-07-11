@@ -20,7 +20,6 @@ class RethinkModel(object):
     dict for debugging purposes.
     """
 
-    _protectedItems = []  #: Strings of the names of properties to not store
     _table = ""  #: The table which this document object will be stored in
     _primaryKey = "id"  #: The current primary key of the table
     _conn = None
@@ -43,6 +42,12 @@ class RethinkModel(object):
 
         (Optional, only if not using .repl()) `conn` or `connection` can also
         be passed, which will be used in all the .run() clauses.
+        """
+
+        _protectedItems = dir(self)
+        """
+        List of strings to not store in the database; automatically set to
+        the built in properties of this object to prevent any accidental stuff
         """
 
         # Is this a new object, or already in the database? (set later)
@@ -99,7 +104,7 @@ arguments while searching for Documents.""")
         else:
             return False
 
-    def _finishInit(self):
+    def finishInit(self):
         """
         A hook called at the end of the main `__init__` to allow for
         custom inherited classes to customize their init process without having
@@ -136,8 +141,8 @@ arguments while searching for Documents.""")
                 keys[item] = value
                 return value
             if hasattr(value, '__call__') and item in keys:
-                raise Exception("""Function exists in object with same name, \
-skipping setting property.""")
+                raise Exception("""Cannot set model data to a function, same \
+name exists in data""")
         return object.__setattr__(self, item, value)
 
     def __getattr__(self, item):
@@ -180,26 +185,33 @@ skipping setting property.""")
     @classmethod
     def new(cls, **kwargs):
         """
-        Gathers, or creates a new record with the given kwargs. If `id`
-        exists in `kwargs` then this will assume that your pulling an existing
-        entry from the database. See __init__ doc for more information about
-        the creation of a new object.
+        Creates a new instance, filling out the models data with the keyword
+        arguments passed.
         """
         return cls(**kwargs)
 
     @classmethod
-    def load(cls, id):
+    def create(cls, **kwargs):
         """
-        Loads an existing entry.
+        Similar to new() however this calls save() on the object before
+        returning it.
+        """
+        what = cls(**kwargs)
+        what.save()
+        return what
+
+    @classmethod
+    def find(cls, id):
+        """
+        Loads an existing entry if one can be found, otherwise an exception is
+        raised.
 
         :param id: The id of the given entry
         :type id: Str
 
         :return: `cls` instance of the given `id` entry
         """
-        key = cls._primaryKey
-        data = {key: id}
-        return cls(**data)
+        return cls(id)
 
     def save(self):
         """
@@ -241,7 +253,7 @@ skipping setting property.""")
         """
         if self._new:
             raise Exception("This is a new object, %s not in data, \
-            indicating this entry isn't stored." % self._primaryKey)
+indicating this entry isn't stored." % self._primaryKey)
 
         r.table(self._table).get(self._data[self._primaryKey]) \
             .delete(durability=self._durability).run(self._conn)
@@ -252,3 +264,66 @@ skipping setting property.""")
         Allows for the representation of the object, for debugging purposes
         """
         return "< RethinkModel at %s with data: %s >" % (id(self), self._data)
+
+    @property
+    def protectedItems(self):
+        return self._protectedItems
+
+    @protectedItems.setter
+    def protectedItems(self, value):
+        if type(value) is list:
+            self._protectedItems.extend(value)
+        else:
+            assert type(value) is str
+            self._protectedItems.append(value)
+        return self._protectedItems
+
+    @property
+    def table(self):
+        return self._table
+
+    @table.setter
+    def table(self, value):
+      assert type(value) is str
+      self._table = value
+      return self._table
+
+    @property
+    def primaryKey(self):
+        return self._primaryKey
+
+    @primaryKey.setter
+    def primaryKey(self, value):
+      assert type(value) is str
+      self._primaryKey = value
+      return self._primaryKey
+
+    @property
+    def nonAtomic(self):
+        return self._non_atomic
+
+    @nonAtomic.setter
+    def nonAtomic(self, value):
+        assert type(value) is bool
+        self._non_atomic = value
+        return self._non_atomic
+
+    @property
+    def durability(self):
+        return self._durability
+
+    @durability.setter
+    def durability(self, value):
+        assert type(value) is not str
+        self.durability = value
+        return self._durability
+
+    @property
+    def upsert(self):
+        return self._upsert
+
+    @upsert.setter
+    def upsert(self, value):
+        assert type(value) is bool
+        self._upsert = value
+        return self._upsert
