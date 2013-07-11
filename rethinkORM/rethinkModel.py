@@ -35,7 +35,7 @@ class RethinkModel(object):
     """Will either update, or create a new object if true and a primary key is
     given."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, id=False, **kwargs):
         """
         Initializes the main object, if `id` is in kwargs, then we assume
         this is already in the database, and will try to pull its data, if not,
@@ -54,25 +54,30 @@ class RethinkModel(object):
         if hasattr(kwargs, "conn") or hasattr(kwargs, "connection"):
             self._conn = kwargs["conn"]
 
-        didWeGetData = False
-        if self._primaryKey in kwargs \
-           and kwargs[self._primaryKey] is not None and self._upsert:
-            key = kwargs[self._primaryKey]
-            didWeGetData = self._grabData(key)
+        if id is None or id == "":
+            raise Exception("""Cannnot have an empty or type None key""")
 
-        # This is a no-no
-        elif self._primaryKey in kwargs and kwargs[self._primaryKey] is None:
-            raise Exception("%s supplied but with type `None`"
-                            % self._primaryKey)
+        elif id and len(kwargs) > 0:
+            raise Exception("""Cannot supply primary key and additional \
+arguments while searching for Documents.""")
 
-        if not didWeGetData:
-            # We assume this is a new object, and that we'll insert it
-            for key in kwargs:
-                if key not in ["conn", "connection"] or key[0] != "_":
-                    self._data[key] = kwargs[key]
+        else:
+            if id and not self._grabData(id):
+                raise Exception("""Could not find key in database""")
+
+            else:
+                self._makeNew(kwargs)
+                if id:
+                    self._data["id"] = id
 
         # Hook to run any inherited class code, if needed
         self._finishInit()
+
+    def _makeNew(self, kwargs):
+        # We assume this is a new object, and that we'll insert it
+        for key in kwargs:
+            if key not in ["conn", "connection"] or key[0] != "_":
+                self._data[key] = kwargs[key]
 
     def _grabData(self, key):
         """
@@ -131,8 +136,8 @@ class RethinkModel(object):
                 keys[item] = value
                 return value
             if hasattr(value, '__call__') and item in keys:
-                raise Exception("Function exists in object with same name,\
-                    skipping setting property.")
+                raise Exception("""Function exists in object with same name, \
+skipping setting property.""")
         return object.__setattr__(self, item, value)
 
     def __getattr__(self, item):
@@ -208,10 +213,14 @@ class RethinkModel(object):
             reply = r.table(self._table) \
                 .update(self._data,
                         durability=self._durability,
-                        non_atomic=self._non_atomic).run(self._conn)
+                        non_atomic=self._non_atomic) \
+                .run(self._conn)
+
         else:
             reply = r.table(self._table) \
-                .insert(self._data, durability=self._durability) \
+                .insert(self._data,
+                        durability=self._durability,
+                        upsert=self._upsert) \
                 .run(self._conn)
             self._new = False
 
@@ -230,7 +239,6 @@ class RethinkModel(object):
         doing, and have a primary key in our data already. If this is a new
         instance, then we'll let the user know with an Exception
         """
-        #if self._primaryKey not in self._data:
         if self._new:
             raise Exception("This is a new object, %s not in data, \
             indicating this entry isn't stored." % self._primaryKey)
@@ -244,8 +252,3 @@ class RethinkModel(object):
         Allows for the representation of the object, for debugging purposes
         """
         return "< RethinkModel at %s with data: %s >" % (id(self), self._data)
-
-    # Does this work? O.o wondering how to go about doing a custom json
-    # interface, if thats possible
-    #def __json__(self):
-        #return self._data
