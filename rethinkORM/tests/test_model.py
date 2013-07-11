@@ -75,7 +75,6 @@ def insert_test():
                         description="Dial Home Device",
                         planet=data["planet"])
     dhdProp.id = data["id"]
-    print dhdProp
     assert dhdProp.save()
     del dhdProp
 
@@ -109,7 +108,7 @@ def load_modify_test():
     Like the insert_test, we go through, load the modified document and
     check the fields to ensure everything is correct.
     """
-    dhdProp = gateModel.load(data["id"])
+    dhdProp = gateModel(data["id"])
     assert dhdProp.id == data["id"]
     assert dhdProp.what == data["what"]
     assert dhdProp.planet == data["planet"]

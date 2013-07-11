@@ -19,7 +19,7 @@ class RethinkModel(object):
     statements. It will give the id and a representation of the internal _data
     dict for debugging purposes.
     """
-
+    _protectedItems = []
     _table = ""  #: The table which this document object will be stored in
     _primaryKey = "id"  #: The current primary key of the table
     _conn = None
@@ -44,7 +44,7 @@ class RethinkModel(object):
         be passed, which will be used in all the .run() clauses.
         """
 
-        _protectedItems = dir(self)
+        self._protectedItems = dir(self)
         """
         List of strings to not store in the database; automatically set to
         the built in properties of this object to prevent any accidental stuff
@@ -76,7 +76,7 @@ arguments while searching for Documents.""")
                     self._data["id"] = id
 
         # Hook to run any inherited class code, if needed
-        self._finishInit()
+        self.finishInit()
 
     def _makeNew(self, kwargs):
         # We assume this is a new object, and that we'll insert it
