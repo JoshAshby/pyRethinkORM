@@ -49,14 +49,8 @@ class gateModel(RethinkModel):
     table = "stargate"
 
 
-"""
-################################################
-Start Unittests
-"""
-
-
 # Sample data to use as a comparison as we test the model
-data = {
+baseData = {
     "what": "DHD",
     "description": """Dial Home Device from the planel P3X-439, where an
     Ancient Repository of Knowledge was found, and interfaced with by Colonel
@@ -67,64 +61,89 @@ data = {
     }
 
 
-def insert_test():
-    """
-    Creates a new object, and inserts it, using `.save()`
-    """
-    dhdProp = gateModel(what="DHD",
-                        description="Dial Home Device",
-                        planet=data["planet"])
-    dhdProp.id = data["id"]
-    assert dhdProp.save()
-    del dhdProp
+newData = {
+    "what": "Star Gate",
+    "description": """Device used to form a wormhole to another gate and
+    transport matter.""",
+    "id": "StarGate-Earth",
+    "planet": "Earth",
+    "episodes": "All",
+    }
 
 
-def load_insert_test():
-    """
-    Loads the previously inserted document, and checks all the fields to
-    ensure everything got stored as we expected.
-    """
-    dhdProp = gateModel(data["id"])
-    assert dhdProp.id == data["id"]
-    assert dhdProp.what == "DHD"
-    assert dhdProp.planet == data["planet"]
-    del dhdProp
+class base(object):
+    cleanupEntry = False
+    model = None
+    whatToLoad = []
+    data = None
+    id = None
+
+    def action_test(self):
+        print "action", self
+        self.action()
+
+    def b_load_test(self):
+        print "load", self
+        self.load()
+
+    def cleanup_test(self):
+        print "cleanup", self
+        if self.cleanupEntry: self.cleanup()
+
+    def action(self):
+        pass
+
+    def load(self):
+        item = self.model(self.id)
+        assert item.id == self.id
+        for bit in self.whatToLoad:
+              assert getattr(item, bit) == self.data[bit]
+        del item
+
+    def cleanup(self):
+        item = self.model(self.id)
+        item.delete()
+        del item
 
 
-def modify_test():
-    """
-    Next, we get the object again, and this time, we modify it, and save it.
-    """
-    dhdProp = gateModel(data["id"])
-    dhdProp.what = data["what"]
-    dhdProp.description = data["description"]
-    dhdProp.episodes = data["episodes"]
-    assert dhdProp.save()
-    del dhdProp
+class insert_test(base):
+    whatToLoad = ["what", "description", "planet"]
+    data = {"what": "DHD",
+            "description": "DialHome Device", "planet":
+            baseData["planet"]}
+    model = gateModel
+    id = baseData["id"]
+
+    def action(self):
+        """
+        Creates a new object, and inserts it, using `.save()`
+        """
+        dhdProp = gateModel(what="DHD",
+                            description="Dial Home Device",
+                            planet=self.data["planet"])
+        dhdProp.id = self.id
+        assert dhdProp.save()
+        del dhdProp
 
 
-def load_modify_test():
-    """
-    Like the insert_test, we go through, load the modified document and
-    check the fields to ensure everything is correct.
-    """
-    dhdProp = gateModel(data["id"])
-    assert dhdProp.id == data["id"]
-    assert dhdProp.what == data["what"]
-    assert dhdProp.planet == data["planet"]
-    assert dhdProp.episodes == data["episodes"]
-    assert dhdProp.description == data["description"]
-    del dhdProp
+class modify_test(base):
+    whatToLoad = ["what", "description", "planet", "episodes"]
+    data = baseData
+    model = gateModel
+    id = baseData["id"]
 
+    cleanupEntry = True
 
-def delete_test():
-    """
-    Finally, we delete it from the table.
-    """
-    dhdProp = gateModel(data["id"])
-    assert dhdProp.delete()
-    del dhdProp
-
+    def action(self):
+        """
+        Next, we get the object again, and this time, we modify it, and save it.
+        """
+        dhdProp = gateModel(self.id)
+        dhdProp.what = self.data["what"]
+        dhdProp.description = self.data["description"]
+        dhdProp.episodes = self.data["episodes"]
+        assert dhdProp.save()
+        del dhdProp
 
 
 """
@@ -163,5 +182,22 @@ def insertIdAndData_test():
 
 
 """
-Now onto the classmethods
+Now onto the classmethods and helper functions to ensure things are good to go
 """
+
+
+def new_classmethod_test():
+    prop = gateModel.new(what=newData["what"],
+                        description=newData["description"])
+    prop.id = newData["id"]
+    assert prop.what == newData["what"]
+    assert prop.description == newData["description"]
+    assert prop.id == newData["id"]
+    assert prop.save()
+
+
+def load_new_classmethod_test():
+    prop = gateModel(newData["id"])
+    assert prop.what == newData["what"]
+    assert prop.description == newData["description"]
+    assert prop.id == newData["id"]

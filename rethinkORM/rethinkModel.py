@@ -191,7 +191,8 @@ name exists in data""")
     def new(cls, **kwargs):
         """
         Creates a new instance, filling out the models data with the keyword
-        arguments passed.
+        arguments passed, so long as those keywords are not in the protected
+        items array.
         """
         return cls(**kwargs)
 
