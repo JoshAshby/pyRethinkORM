@@ -20,17 +20,18 @@ class RethinkModel(object):
     dict for debugging purposes.
     """
     _protectedItems = []
-    _table = ""  #: The table which this document object will be stored in
-    _primaryKey = "id"  #: The current primary key of the table
     _conn = None
 
-    _durability = "soft"
+    table = ""  #: The table which this document object will be stored in
+    primaryKey = "id"  #: The current primary key of the table
+
+    durability = "soft"
     """Can either be Hard or Soft, and is passed to RethinkDB"""
 
-    _non_atomic = False
+    non_atomic = False
     """Determins if the transaction can be non atomic or not"""
 
-    _upsert = True
+    upsert = True
     """Will either update, or create a new object if true and a primary key is
     given."""
 
@@ -44,7 +45,9 @@ class RethinkModel(object):
         be passed, which will be used in all the .run() clauses.
         """
 
-        self._protectedItems = dir(self)
+        protectedItems = dir(self)
+        protectedItems.append(self._protectedItems)
+        self._protectedItems = protectedItems
         """
         List of strings to not store in the database; automatically set to
         the built in properties of this object to prevent any accidental stuff
@@ -59,21 +62,23 @@ class RethinkModel(object):
         if hasattr(kwargs, "conn") or hasattr(kwargs, "connection"):
             self._conn = kwargs["conn"]
 
-        if id is None or id == "":
+        key = kwargs[self.primaryKey] if self.primaryKey in kwargs else id
+
+        if key is None or key == "" and len(kwargs) == 0:
             raise Exception("""Cannnot have an empty or type None key""")
 
-        elif id and len(kwargs) > 0:
+        elif key and len(kwargs) > 0:
             raise Exception("""Cannot supply primary key and additional \
 arguments while searching for Documents.""")
 
         else:
-            if id and not self._grabData(id):
+            if key and not self._grabData(key):
                 raise Exception("""Could not find key in database""")
 
             else:
                 self._makeNew(kwargs)
-                if id:
-                    self._data["id"] = id
+                if key:
+                    self._data[self.primaryKey] = key
 
         # Hook to run any inherited class code, if needed
         self.finishInit()
@@ -96,7 +101,7 @@ arguments while searching for Documents.""")
         :return: True if a document was found, otherwise False
         :rtype: Boolean
         """
-        rawCursor = r.table(self._table).get(key).run(self._conn)
+        rawCursor = r.table(self.table).get(key).run(self._conn)
         if rawCursor:
             self._data = rawCursor
             self._new = False
@@ -222,22 +227,22 @@ name exists in data""")
         insert or update.
         """
         if not self._new:
-            reply = r.table(self._table) \
+            reply = r.table(self.table) \
                 .update(self._data,
-                        durability=self._durability,
-                        non_atomic=self._non_atomic) \
+                        durability=self.durability,
+                        non_atomic=self.non_atomic) \
                 .run(self._conn)
 
         else:
-            reply = r.table(self._table) \
+            reply = r.table(self.table) \
                 .insert(self._data,
-                        durability=self._durability,
-                        upsert=self._upsert) \
+                        durability=self.durability,
+                        upsert=self.upsert) \
                 .run(self._conn)
             self._new = False
 
         if "generated_keys" in reply and reply["generated_keys"]:
-            self._data[self._primaryKey] = reply["generated_keys"][0]
+            self._data[self.primaryKey] = reply["generated_keys"][0]
 
         if "errors" in reply and reply["errors"] > 0:
             raise Exception("Could not insert entry: %s"
@@ -253,10 +258,10 @@ name exists in data""")
         """
         if self._new:
             raise Exception("This is a new object, %s not in data, \
-indicating this entry isn't stored." % self._primaryKey)
+indicating this entry isn't stored." % self.primaryKey)
 
-        r.table(self._table).get(self._data[self._primaryKey]) \
-            .delete(durability=self._durability).run(self._conn)
+        r.table(self.table).get(self._data[self.primaryKey]) \
+            .delete(durability=self.durability).run(self._conn)
         return True
 
     def __repr__(self):
@@ -277,53 +282,3 @@ indicating this entry isn't stored." % self._primaryKey)
             assert type(value) is str
             self._protectedItems.append(value)
         return self._protectedItems
-
-    @property
-    def table(self):
-        return self._table
-
-    @table.setter
-    def table(self, value):
-      assert type(value) is str
-      self._table = value
-      return self._table
-
-    @property
-    def primaryKey(self):
-        return self._primaryKey
-
-    @primaryKey.setter
-    def primaryKey(self, value):
-      assert type(value) is str
-      self._primaryKey = value
-      return self._primaryKey
-
-    @property
-    def nonAtomic(self):
-        return self._non_atomic
-
-    @nonAtomic.setter
-    def nonAtomic(self, value):
-        assert type(value) is bool
-        self._non_atomic = value
-        return self._non_atomic
-
-    @property
-    def durability(self):
-        return self._durability
-
-    @durability.setter
-    def durability(self, value):
-        assert type(value) is not str
-        self.durability = value
-        return self._durability
-
-    @property
-    def upsert(self):
-        return self._upsert
-
-    @upsert.setter
-    def upsert(self, value):
-        assert type(value) is bool
-        self._upsert = value
-        return self._upsert

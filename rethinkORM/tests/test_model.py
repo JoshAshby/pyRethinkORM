@@ -46,7 +46,7 @@ class gateModel(RethinkModel):
     Sample document object which represents the documents within the table
     `stargate`.
     """
-    _table = "stargate"
+    table = "stargate"
 
 
 """
@@ -155,3 +155,13 @@ def insertBadId_test():
     oldProp = gateModel(id=None, what="Something?")
     assert oldProp.save()
     del oldProp
+
+
+@nst.raises(Exception)
+def insertIdAndData_test():
+    prop = gateModel(id="3", what="duh")
+
+
+"""
+Now onto the classmethods
+"""
