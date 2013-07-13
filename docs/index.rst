@@ -63,7 +63,7 @@ a specific table, along with getting a connection to RethinkDB started.
 
 
     class tvProps(RethinkModel):
-        _table = "stargate_props"
+        table = "stargate_props"
 
 
 For more information on what class properties are available to change, see
@@ -74,8 +74,8 @@ Inserting/creating an entry
 
 ::
 
-    dhdProp = tvProps(what="DHD", planet="P3X-439", description="Dial HomeDevice",
-        id="DHD_P3X_439")
+    dhdProp = tvProps(what="DHD", planet="P3X-439", description="Dial HomeDevice")
+    dhdProp.id="DHD_P3X_439"
     dhdProp.save()
 
 Updating an entry
@@ -83,7 +83,7 @@ Updating an entry
 
 ::
 
-    updatedProp = tvProps(id="DHD_P3X_439")
+    updatedProp = tvProps("DHD_P3X_439")
     updatedProp.description="""Dial Home Device from the planel P3X-439, where an
         Ancient Repository of Knowledge was found, and interfaced with by Colonel
         Jack."""
@@ -94,7 +94,7 @@ Deleting an entry
 
 ::
 
-    oldProp = tvProps(id="DHD_P3X_439")
+    oldProp = tvProps("DHD_P3X_439")
     oldProp.delete()
 
 

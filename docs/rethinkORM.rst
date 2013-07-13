@@ -7,7 +7,7 @@ rethinkORM
 --------------------------
 
 .. autoclass:: rethinkORM.rethinkModel.RethinkModel
-    :members: __init__, _finishInit, __delitem__, __contains__, new, load, save, delete, __repr__, _protectedItems, _primaryKey, _table, _durability, _non_atomic, _upsert
+    :members: __init__, finishInit, __delitem__, __contains__, new, find, save, delete, __repr__, protectedItems, primaryKey, table, durability, non_atomic, upsert, create
     :undoc-members:
 
 Subpackages

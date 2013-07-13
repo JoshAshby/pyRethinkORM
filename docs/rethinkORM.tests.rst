@@ -47,6 +47,5 @@ for example there are currently tests for:
 
 .. automodule:: rethinkORM.tests.test_model
     :members:
-    :undoc-members:
     :show-inheritance:
 
