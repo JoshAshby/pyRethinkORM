@@ -70,98 +70,125 @@ newData = {
     "episodes": "All",
     }
 
+classmethodData = {
+    "what": "Stuff",
+    "description": "zzzz",
+    "id": "fucking-Tests"
+    }
+
 
 class base(object):
-    cleanupEntry = False
-    model = None
+    """
+    Base test object to help automate some of the repedative work of reloading
+    a document to ensure the model matches the test data. Also takes care of
+    deleting the document if `cleanupAfter` is `True`
+    """
+    cleanupAfter = False
+    """Should the document created by this test be deleted when over?"""
+    loadCheck = True
+    """
+    Should the document be releaded and have all it's data checked against?
+    """
     whatToLoad = []
+    """
+    If loadCheck is true, fill this out with strings of the data keys
+    to check the model against.
+    """
+
+    model = None
+    """The model being used for this test"""
     data = None
-    id = None
+    """The data being used for this test. Please at least include an ID"""
 
     def action_test(self):
-        print "action", self
         self.action()
 
     def b_load_test(self):
-        print "load", self
-        self.load()
+        if self.loadCheck:
+            self.load()
 
     def cleanup_test(self):
-        print "cleanup", self
-        if self.cleanupEntry: self.cleanup()
+        if self.cleanupAfter:
+            self.cleanup()
 
     def action(self):
+        """
+        Override this with your own function to do whatever you want for the
+        test
+        """
         pass
 
     def load(self):
-        item = self.model(self.id)
-        assert item.id == self.id
+        item = self.model(self.data["id"])
+        assert item.id == self.data["id"]
         for bit in self.whatToLoad:
-              assert getattr(item, bit) == self.data[bit]
+            assert getattr(item, bit) == self.data[bit]
         del item
 
     def cleanup(self):
-        item = self.model(self.id)
+        item = self.model(self.data["id"])
         item.delete()
         del item
 
 
 class insert_test(base):
+    """
+    Tests the basic ability to make a new model instance, and save it to the
+    Database
+    """
     whatToLoad = ["what", "description", "planet"]
     data = {"what": "DHD",
-            "description": "DialHome Device", "planet":
-            baseData["planet"]}
+            "description": "Dial Home Device",
+            "planet": baseData["planet"],
+            "id": baseData["id"]}
     model = gateModel
-    id = baseData["id"]
 
     def action(self):
         """
         Creates a new object, and inserts it, using `.save()`
         """
-        dhdProp = gateModel(what="DHD",
-                            description="Dial Home Device",
+        dhdProp = gateModel(what=self.data["what"],
+                            description=self.data["description"],
                             planet=self.data["planet"])
-        dhdProp.id = self.id
+        dhdProp.id = self.data["id"]
         assert dhdProp.save()
         del dhdProp
 
 
 class modify_test(base):
+    """Tests the ability to load, modify and save a model correctly"""
     whatToLoad = ["what", "description", "planet", "episodes"]
     data = baseData
     model = gateModel
-    id = baseData["id"]
 
-    cleanupEntry = True
+    cleanupAfter = True
 
     def action(self):
         """
-        Next, we get the object again, and this time, we modify it, and save it.
+        Next, we get the object again, and this time,
+        we modify it, and save it.
         """
-        dhdProp = gateModel(self.id)
+        dhdProp = gateModel(what=self.data["what"],
+                            description=self.data["description"],
+                            planet=self.data["planet"])
+        dhdProp.id = self.data["id"]
+        assert dhdProp.save()
+        del dhdProp
+
+        dhdProp = gateModel(self.data["id"])
         dhdProp.what = self.data["what"]
         dhdProp.description = self.data["description"]
         dhdProp.episodes = self.data["episodes"]
         assert dhdProp.save()
         del dhdProp
 
-
-"""
-------------------------------------------------
-Exception raising tests. These should raise an exception of some sort, and if
-they don't, then we should fail the test.
-
-Use of @nst.raises() from nose.tools is highly recommended.
-"""
-
-
-@nst.raises(Exception)
-def load_delete_test():
-    """
-    And make sure that if we try to get that object after it's been deleted,
-    that we get a new object rather than the existing one we deleted.
-    """
-    dhdProp = gateModel(data["id"])
+        @nst.raises(Exception)
+        def d_load_delete_test(self):
+            """
+            And make sure that if we try to get that object after it's been deleted,
+            that we get a new object rather than the existing one we deleted.
+            """
+            dhdProp = self.model(self.data["id"])
 
 
 @nst.raises(Exception)
@@ -178,6 +205,10 @@ def insertBadId_test():
 
 @nst.raises(Exception)
 def insertIdAndData_test():
+    """
+    Make sure that the model raises an Exception when a key and data are
+    provided
+    """
     prop = gateModel(id="3", what="duh")
 
 
@@ -186,18 +217,63 @@ Now onto the classmethods and helper functions to ensure things are good to go
 """
 
 
-def new_classmethod_test():
-    prop = gateModel.new(what=newData["what"],
-                        description=newData["description"])
-    prop.id = newData["id"]
-    assert prop.what == newData["what"]
-    assert prop.description == newData["description"]
-    assert prop.id == newData["id"]
-    assert prop.save()
+class new_classmethod_test(base):
+    """
+    Tests the new() classmethod of the model
+    """
+    model = gateModel
+    data = classmethodData
+    whatToCheck = ["what", "description"]
+
+    cleanupAfter = True
+
+    def action(self):
+        prop = gateModel.new(what=self.data["what"],
+                             description=self.data["description"])
+        prop.id = self.data["id"]
+        assert prop.what == self.data["what"]
+        assert prop.description == self.data["description"]
+        assert prop.id == self.data["id"]
+        assert prop.save()
 
 
-def load_new_classmethod_test():
-    prop = gateModel(newData["id"])
-    assert prop.what == newData["what"]
-    assert prop.description == newData["description"]
-    assert prop.id == newData["id"]
+class create_classmethod_test(base):
+    """
+    Tests the create() classmethod of the model
+
+    Same as the new() classmethod test however we don't have to explicitly
+    tell the model to save
+    """
+    model = gateModel
+    data = classmethodData
+    whatToCheck = ["what", "description"]
+
+    def action(self):
+        prop = gateModel.create(what=self.data["what"],
+                                description=self.data["description"],
+                                id=self.data["id"])
+        assert prop.what == self.data["what"]
+        assert prop.description == self.data["description"]
+        assert prop.id == self.data["id"]
+
+
+class find_classmethod_test(base):
+    """
+    Tests the find() classmethod of the model
+    """
+    model = gateModel
+    data = classmethodData
+    whatToCheck = ["what", "description"]
+    loadCheck = False
+    cleanupAfter = True
+
+    def action(self):
+        oldProp = gateModel(what=self.data["what"],
+                                description=self.data["description"])
+        oldProp.id=self.data["id"]
+        oldProp.save()
+
+        prop = gateModel.find(self.data["id"])
+        assert prop.what == self.data["what"]
+        assert prop.description == self.data["description"]
+        assert prop.id == self.data["id"]
