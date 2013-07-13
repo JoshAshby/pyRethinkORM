@@ -65,7 +65,7 @@ class RethinkModel(object):
         key = kwargs[self.primaryKey] if self.primaryKey in kwargs else id
 
         if key is None or key == "" and len(kwargs) == 0:
-            raise Exception("""Cannnot have an empty or type None key""")
+            raise Exception("""Cannot have an empty or type None key""")
 
         elif key and len(kwargs) > 0:
             raise Exception("""Cannot supply primary key and additional \
@@ -225,7 +225,7 @@ name exists in data""")
         """
         If an id exists in the database, we assume we'll update it, and if not
         then we'll insert it. This could be a problem with creating your own
-        id's on new objects, however luckly, we keep track of if this is a new
+        id's on new objects, however luckily, we keep track of if this is a new
         object through a private _new variable, and use that to determine if we
         insert or update.
         """
@@ -275,6 +275,10 @@ indicating this entry isn't stored." % self.primaryKey)
 
     @property
     def protectedItems(self):
+        """
+        Provides a cleaner interface to dynamically add items to the models
+        list of protected functions to not store in the database
+        """
         return self._protectedItems
 
     @protectedItems.setter

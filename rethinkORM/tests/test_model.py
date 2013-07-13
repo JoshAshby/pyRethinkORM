@@ -10,8 +10,8 @@ from rethinkORM import RethinkModel
 
 """
 ################################################
-Test Fixtures, setup and teardown run before the first test, and after the last
-test, respectfully. These are responsable for initializing the RethinkDB
+Test Fixtures, setup and tear down run before the first test, and after the
+last test, respectfully. These are responsible for initializing the RethinkDB
 connection, making a test database, and later destroying that test database.
 
 gateModel is the test object that we'll be working with
@@ -52,7 +52,7 @@ class gateModel(RethinkModel):
 # Sample data to use as a comparison as we test the model
 baseData = {
     "what": "DHD",
-    "description": """Dial Home Device from the planel P3X-439, where an
+    "description": """Dial Home Device from the planet P3X-439, where an
     Ancient Repository of Knowledge was found, and interfaced with by Colonel
     Jack.""",
     "id": "P3X-439-DHD",
@@ -79,7 +79,7 @@ classmethodData = {
 
 class base(object):
     """
-    Base test object to help automate some of the repedative work of reloading
+    Base test object to help automate some of the repetitive work of reloading
     a document to ensure the model matches the test data. Also takes care of
     deleting the document if `cleanupAfter` is `True`
     """
@@ -87,7 +87,7 @@ class base(object):
     """Should the document created by this test be deleted when over?"""
     loadCheck = True
     """
-    Should the document be releaded and have all it's data checked against?
+    Should the document be reloaded and have all it's data checked against?
     """
     whatToLoad = []
     """
@@ -103,6 +103,8 @@ class base(object):
     def action_test(self):
         self.action()
 
+    # prefixed with b_ to run this right after action because things run alpha
+    # order it seems
     def b_load_test(self):
         if self.loadCheck:
             self.load()
@@ -119,6 +121,13 @@ class base(object):
         pass
 
     def load(self):
+        """
+        Override this to do a custom load check. This should find the key you
+        created or modified in `action()` and check it's values to ensure
+        everything was set correctly. By default this loads the model with the
+        test objects `data["id"]` and uses `whatToLoad` to run checks against
+        the data and the model.
+        """
         item = self.model(self.data["id"])
         assert item.id == self.data["id"]
         for bit in self.whatToLoad:
@@ -126,6 +135,11 @@ class base(object):
         del item
 
     def cleanup(self):
+        """
+        Override this to set a custom cleanup process. By default this takes
+        the key that was generated in `action()` and calls the models
+        `.delete()` function.
+        """
         item = self.model(self.data["id"])
         item.delete()
         del item
@@ -185,8 +199,9 @@ class modify_test(base):
         @nst.raises(Exception)
         def d_load_delete_test(self):
             """
-            And make sure that if we try to get that object after it's been deleted,
-            that we get a new object rather than the existing one we deleted.
+            And make sure that if we try to get that object after it's been
+            deleted, that we get a new object rather than the existing
+            one we deleted.
             """
             dhdProp = self.model(self.data["id"])
 
@@ -269,8 +284,8 @@ class find_classmethod_test(base):
 
     def action(self):
         oldProp = gateModel(what=self.data["what"],
-                                description=self.data["description"])
-        oldProp.id=self.data["id"]
+                            description=self.data["description"])
+        oldProp.id = self.data["id"]
         oldProp.save()
 
         prop = gateModel.find(self.data["id"])
