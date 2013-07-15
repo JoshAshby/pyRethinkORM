@@ -48,6 +48,16 @@ A Few Minor Warnings
    little childish at best. In other words: It'll hopefully get better, but it
    might be a little limited right now.
 
+
+Installation:
+-------------
+This package is kindly hosted on the Python Package Index making it as easy as
+a simple `pip` command to install.
+
+::
+
+    pip install RethinkORM
+
 Quick Start:
 ------------
 

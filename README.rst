@@ -35,6 +35,13 @@ A Few Minor Warnings
 Documentation
 =============
 
+Installation:
+-------------
+
+::
+
+    pip install RethinkORM
+
 For more information, a short quick start, and information about running the
 test suit, please `read the documentation
 <https://rethinkorm.readthedocs.org/en/latest/>`__ kindly hosted
