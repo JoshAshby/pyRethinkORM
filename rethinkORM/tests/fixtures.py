@@ -31,7 +31,7 @@ def setup():
     r.db_create("model").run(conn)
     conn.use("model")
     conn.repl()
-    r.table_create("stargate").run()
+    r.table_create("stargates").run()
 
 
 def teardown():
@@ -48,22 +48,3 @@ class gateModel(RethinkModel):
     `stargates`.
     """
     table = "stargates"
-
-class shipModel(RethinkModel):
-    """
-    Sample document object wo represent star ship documents in the
-    table `ships`.
-    """
-    table = "ships"
-
-
-# Sample data to use as a comparison as we test the model
-baseGateData = {
-    "what": "DHD",
-    "description": """Dial Home Device from the planet P3X-439, where an
-    Ancient Repository of Knowledge was found, and interfaced with by Colonel
-    Jack.""",
-    "id": "P3X-439-DHD",
-    "planet": "P3X-439",
-    "episodes": ["Lost City, Part 1"],
-    }

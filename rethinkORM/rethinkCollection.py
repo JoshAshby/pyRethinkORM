@@ -3,15 +3,15 @@
 Quick way to get groupings of RethinkModels objects matching the given criteria
 """
 import rethinkdb as r
+from rethinkModel import RethinkModel
 
 
 class RethinkCollection(object):
     """
     Base collection object providing access to groups of `RethinkModel`s
     """
-
-    def __init__(self, model, **kwargs):
-        self.table = model
+    def __init__(self, model):
+        self.model = model
 
     def join(self, model):
         pass
@@ -46,3 +46,9 @@ class RethinkCollection(object):
 
     def __contains__(self, item):
         pass
+
+class CollectionModel(RethinkModel):
+    """
+    An override class to make handling objects that are created from
+    collections easier.
+    """

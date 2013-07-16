@@ -2,7 +2,7 @@
 """
 Test suite for the model
 """
-from rethinkORM.tests.baseSetup import *
+from rethinkORM.tests.fixtures import *
 
 
 # Sample data to use as a comparison as we test the model

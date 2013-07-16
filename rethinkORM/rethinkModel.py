@@ -273,6 +273,16 @@ indicating this entry isn't stored." % self.primaryKey)
         """
         return "< RethinkModel at %s with data: %s >" % (id(self), self._data)
 
+    def joinOn(self, model, field):
+        """
+        """
+        pass
+
+    def joinOnAs(self, model, field, where):
+        """
+        """
+        pass
+
     @property
     def protectedItems(self):
         """
