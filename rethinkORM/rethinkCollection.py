@@ -8,14 +8,29 @@ from rethinkModel import RethinkModel
 
 class RethinkCollection(object):
     """
-    Base collection object providing access to groups of `RethinkModel`s
+    A way to fetch groupings of documents that meet a criteria and have them
+    in an iterable storage object, with each document represented by
+    `RethinkModel` objects
     """
-    def __init__(self, model):
+    def __init__(self, model, condition=None):
+        self._documents = []
         self.model = model
+        self._condititon = condition
 
     def join(self, model):
         pass
 
+    def orderBy(self, field):
+        pass
+
+    def __repr(self):
+        pass
+
+    def __iter__(self):
+        for doc in self._documents:
+            yield doc
+
+    # Pagination helpers...
     def paginate(self, start,finish):
         pass
 
@@ -34,21 +49,7 @@ class RethinkCollection(object):
     @property
     def pages(self):
         pass
+    # Okay, enough pagination
 
-    def orderBy(self, field):
+    def fetch(self):
         pass
-
-    def __repr(self):
-        pass
-
-    def __iter__(self):
-        pass
-
-    def __contains__(self, item):
-        pass
-
-class CollectionModel(RethinkModel):
-    """
-    An override class to make handling objects that are created from
-    collections easier.
-    """

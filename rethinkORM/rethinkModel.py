@@ -68,8 +68,11 @@ class RethinkModel(object):
             raise Exception("""Cannot have an empty or type None key""")
 
         elif key and len(kwargs) > 0:
-            raise Exception("""Cannot supply primary key and additional \
-arguments while searching for Documents.""")
+            # Assume we have data from a collection, just go with it and set
+            # our data.
+            self._makeNew(kwargs)
+            #raise Exception("""Cannot supply primary key and additional \
+#arguments while searching for Documents.""")
 
         else:
             if key and not self._grabData(key):
