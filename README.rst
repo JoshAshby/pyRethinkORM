@@ -16,7 +16,7 @@ Build status - Master:
     :alt: Number of PyPI downloads
 
 
-Dev:
+Build status - Dev:
 
 
 .. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=dev
@@ -54,7 +54,7 @@ A Few Minor Warnings
 Documentation
 =============
 
-Install with `pip`:
+Install with ``pip``
 
 ::
     pip install RethinkORM
@@ -67,8 +67,10 @@ on `readthedocs.org <http://readthedocs.org>`__
 Contributing
 ------------
 
-Submit a pull request or open an issue. Most things I probably won't have
-time to get around to looking at too deeply, so if you want it fixed, a pull
-request is the way to go.
-Besides that, I'm releasing this under the GPLv3 License as found in the
+All code for this can be found online at
+`github <https://github.com/JoshAshby/pyRethinkORM>`__.
+If something is broken, or a feature is missing, please submit a pull request
+or open an issue. Most things I probably won't have time to get around to
+looking at too deeply, so if you want it fixed, a pull request is the way
+to go. Besides that, I'm releasing this under the GPLv3 License as found in the
 ``LICENSE.txt`` file. Enjoy!
