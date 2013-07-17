@@ -1,19 +1,11 @@
 RethinkORM
 ==========
 
-Build status:
-~~~~~~~~~~~~~
+Build status - Master:
 
-Master:
 
 .. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=master
         :target: http://travis-ci.org/JoshAshby/pyRethinkORM
-
-dev:
-
-.. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=dev
-        :target: http://travis-ci.org/JoshAshby/pyRethinkORM
-
 
 .. image:: https://pypip.in/v/RethinkORM/badge.png
     :target: https://crate.io/packages/RethinkORM/
@@ -22,6 +14,13 @@ dev:
 .. image:: https://pypip.in/d/RethinkORM/badge.png
     :target: https://crate.io/packages/RethinkORM/
     :alt: Number of PyPI downloads
+
+
+Dev:
+
+
+.. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=dev
+        :target: http://travis-ci.org/JoshAshby/pyRethinkORM
 
 
 RethinkORM is a small wrapper class to help make working with documents in
