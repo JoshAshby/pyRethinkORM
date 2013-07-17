@@ -12,18 +12,39 @@ class RethinkCollection(object):
     in an iterable storage object, with each document represented by
     `RethinkModel` objects
     """
-    def __init__(self, model, condition=None):
+    documents = []
+    table = ""
+    _model = None
+    _query = None
+    _filter = {}
+
+    def __init__(self, model, filter=None):
+        """
+        Instantiates a new collection, using the given models table, and
+        wrapping all documents with the given model.
+
+        Filter can be a dictionary or lambda, similar to the filters for the
+        RethinkDB drivers filters.
+        """
         self._documents = []
-        self.model = model
-        self._condititon = condition
+        self._model = model
+        self.table = self._model.table
+        self._filter = filter
+        self._query = r.table(self.table).filter(self._filter)
 
     def join(self, model):
-        pass
+        """
+        """
+        name = model.__name__
+        table = model.table
+        self._query.eqJoin(name, table)
+        return self
 
     def orderBy(self, field):
-        pass
+        self._query.orderBy(field)
+        return self
 
-    def __repr(self):
+    def __repr__(self):
         pass
 
     def __iter__(self):
@@ -31,25 +52,34 @@ class RethinkCollection(object):
             yield doc
 
     # Pagination helpers...
-    def paginate(self, start,finish):
-        pass
+    # These are questionable, on if I'll put them in or not.
+    #def paginate(self, start,finish):
+        #pass
 
-    @property
-    def currentPage(self):
-        pass
+    #@property
+    #def currentPage(self):
+        #pass
 
-    @property
-    def perpage(self):
-        pass
+    #@property
+    #def perpage(self):
+        #pass
 
-    @property
-    def hasnextpage(self):
-        pass
+    #@property
+    #def hasnextpage(self):
+        #pass
 
-    @property
-    def pages(self):
-        pass
+    #@property
+    #def pages(self):
+        #pass
     # Okay, enough pagination
 
     def fetch(self):
-        pass
+        returnResults = []
+
+        results = self._query.run()
+        for result in results:
+            item = self._model(**result)
+
+            returnResults.append(item)
+
+        return returnResults

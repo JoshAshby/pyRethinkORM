@@ -70,8 +70,8 @@ class RethinkModel(object):
         elif key and len(kwargs) > 0:
             # Assume we have data from a collection, just go with it and set
             # our data.
-            self._makeNew(kwargs)
-            #raise Exception("""Cannot supply primary key and additional \
+            #self._makeNew(kwargs)
+            raise Exception("""Cannot supply primary key and additional \
 #arguments while searching for Documents.""")
 
         else:
