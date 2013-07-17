@@ -1,10 +1,27 @@
 RethinkORM: Introduction
 ========================
 
-Build status:
+Build status - Master:
+
 
 .. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=master
         :target: http://travis-ci.org/JoshAshby/pyRethinkORM
+
+.. image:: https://pypip.in/v/RethinkORM/badge.png
+    :target: https://crate.io/packages/RethinkORM/
+    :alt: Latest PyPI version
+
+.. image:: https://pypip.in/d/RethinkORM/badge.png
+    :target: https://crate.io/packages/RethinkORM/
+    :alt: Number of PyPI downloads
+
+
+Build status - Dev:
+
+
+.. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=dev
+        :target: http://travis-ci.org/JoshAshby/pyRethinkORM
+
 
 RethinkORM is a small wrapper class to help make working with documents in
 `RethinkDB <http://www.rethinkdb.com/>`__ easier, and in a more Pythonic way.
@@ -52,14 +69,18 @@ A Few Minor Warnings
 Installation:
 -------------
 This package is kindly hosted on the Python Package Index making it as easy as
-a simple `pip` command to install.
+a simple ``pip`` command to install.
 
 ::
 
     pip install RethinkORM
 
+
 Quick Start:
 ------------
+
+::
+    pip install RethinkORM
 
 First we need to make an object which will represent all of our data in
 a specific table, along with getting a connection to RethinkDB started.
@@ -111,10 +132,12 @@ Deleting an entry
 Contributing
 ------------
 
-Submit a pull request or open an issue. Most things I probably won't have
-time to get around to looking at too deeply, so if you want it fixed, a pull
-request is the way to go.
-Besides that, I'm releasing this under the GPLv3 License as found in the
+All code for this can be found online at
+`github <https://github.com/JoshAshby/pyRethinkORM>`__.
+If something is broken, or a feature is missing, please submit a pull request
+or open an issue. Most things I probably won't have time to get around to
+looking at too deeply, so if you want it fixed, a pull request is the way
+to go. Besides that, I'm releasing this under the GPLv3 License as found in the
 ``LICENSE.txt`` file. Enjoy!
 
 

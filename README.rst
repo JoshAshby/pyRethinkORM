@@ -1,8 +1,27 @@
 RethinkORM
 ==========
 
+Build status - Master:
+
+
 .. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=master
         :target: http://travis-ci.org/JoshAshby/pyRethinkORM
+
+.. image:: https://pypip.in/v/RethinkORM/badge.png
+    :target: https://crate.io/packages/RethinkORM/
+    :alt: Latest PyPI version
+
+.. image:: https://pypip.in/d/RethinkORM/badge.png
+    :target: https://crate.io/packages/RethinkORM/
+    :alt: Number of PyPI downloads
+
+
+Build status - Dev:
+
+
+.. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=dev
+        :target: http://travis-ci.org/JoshAshby/pyRethinkORM
+
 
 RethinkORM is a small wrapper class to help make working with documents in
 `RethinkDB <http://www.rethinkdb.com/>`__ easier, and in a more Pythonic way.
@@ -39,7 +58,6 @@ Installation:
 -------------
 
 ::
-
     pip install RethinkORM
 
 For more information, a short quick start, and information about running the
@@ -50,8 +68,10 @@ on `readthedocs.org <http://readthedocs.org>`__
 Contributing
 ------------
 
-Submit a pull request or open an issue. Most things I probably won't have
-time to get around to looking at too deeply, so if you want it fixed, a pull
-request is the way to go.
-Besides that, I'm releasing this under the GPLv3 License as found in the
+All code for this can be found online at
+`github <https://github.com/JoshAshby/pyRethinkORM>`__.
+If something is broken, or a feature is missing, please submit a pull request
+or open an issue. Most things I probably won't have time to get around to
+looking at too deeply, so if you want it fixed, a pull request is the way
+to go. Besides that, I'm releasing this under the GPLv3 License as found in the
 ``LICENSE.txt`` file. Enjoy!
