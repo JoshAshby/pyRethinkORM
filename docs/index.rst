@@ -2,9 +2,25 @@ RethinkORM: Introduction
 ========================
 
 Build status:
+~~~~~~~~~~~~~
 
+Master: 
 .. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=master
         :target: http://travis-ci.org/JoshAshby/pyRethinkORM
+
+dev:
+.. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=dev
+        :target: http://travis-ci.org/JoshAshby/pyRethinkORM
+
+
+.. image:: https://pypip.in/v/RethinkORM/badge.png
+    :target: https://crate.io/packages/RethinkORM/
+    :alt: Latest PyPI version
+
+.. image:: https://pypip.in/d/RethinkORM/badge.png
+    :target: https://crate.io/packages/RethinkORM/
+    :alt: Number of PyPI downloads
+
 
 RethinkORM is a small wrapper class to help make working with documents in
 `RethinkDB <http://www.rethinkdb.com/>`__ easier, and in a more Pythonic way.
@@ -50,6 +66,9 @@ A Few Minor Warnings
 
 Quick Start:
 ------------
+
+::
+    pip install RethinkORM
 
 First we need to make an object which will represent all of our data in
 a specific table, along with getting a connection to RethinkDB started.
