@@ -4,11 +4,13 @@ RethinkORM
 Build status:
 ~~~~~~~~~~~~~
 
-Master: 
+Master:
+
 .. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=master
         :target: http://travis-ci.org/JoshAshby/pyRethinkORM
 
 dev:
+
 .. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=dev
         :target: http://travis-ci.org/JoshAshby/pyRethinkORM
 
