@@ -3,7 +3,7 @@
 Quick way to get groupings of RethinkModels objects matching the given criteria
 """
 import rethinkdb as r
-from rethinkModel import RethinkModel
+#from rethinkModel import RethinkModel
 
 
 class RethinkCollection(object):
@@ -17,6 +17,7 @@ class RethinkCollection(object):
     _model = None
     _query = None
     _filter = {}
+    _join = None
 
     def __init__(self, model, filter=None):
         """
@@ -32,12 +33,15 @@ class RethinkCollection(object):
         self._filter = filter
         self._query = r.table(self.table).filter(self._filter)
 
-    def join(self, model):
+    def join(self, model, onIndex):
         """
+        performs an 
         """
-        name = model.__name__
+        if self._join:
+            raise Exception("Already joined with a table!")
+        self._join = model.__name__
         table = model.table
-        self._query.eqJoin(name, table)
+        self._query.eqJoin(onIndex, r.table(table))
         return self
 
     def orderBy(self, field):
@@ -78,8 +82,11 @@ class RethinkCollection(object):
 
         results = self._query.run()
         for result in results:
-            item = self._model(**result)
+            if self._join:
+                pass
+            print result
+            #item = self._model(**result)
 
-            returnResults.append(item)
+            #returnResults.append(item)
 
         return returnResults

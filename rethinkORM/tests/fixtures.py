@@ -48,3 +48,7 @@ class gateModel(RethinkModel):
     `stargates`.
     """
     table = "stargates"
+
+
+def generate_docs(howMany):
+    pass
