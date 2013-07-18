@@ -27,19 +27,22 @@ class RethinkCollection(object):
         Filter can be a dictionary or lambda, similar to the filters for the
         RethinkDB drivers filters.
         """
-        self._documents = []
         self._model = model
-        self.table = self._model.table
-        self._filter = filter
-        self._query = r.table(self.table).filter(self._filter)
+        self._query = r.table(self._model.table)
+
+        if filter:
+            self._filter = filter
+            self._query.filter(self._filter)
 
     def join(self, model, onIndex):
         """
-        performs an 
+        Performs an eqJoin on with the given model. The resulting join will be
+        accessible through the models name.
         """
         if self._join:
             raise Exception("Already joined with a table!")
-        self._join = model.__name__
+
+        self._join = model
         table = model.table
         self._query.eqJoin(onIndex, r.table(table))
         return self
