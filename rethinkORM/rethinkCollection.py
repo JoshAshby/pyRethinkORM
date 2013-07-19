@@ -87,9 +87,8 @@ class RethinkCollection(object):
         for result in results:
             if self._join:
                 pass
-            print result
-            #item = self._model(**result)
+            item = self._model.fromRawEntry(**result)
 
-            #returnResults.append(item)
+            returnResults.append(item)
 
         return returnResults
