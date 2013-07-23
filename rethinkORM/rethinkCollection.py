@@ -3,7 +3,6 @@
 Quick way to get groupings of RethinkModels objects matching the given criteria
 """
 import rethinkdb as r
-#from rethinkModel import RethinkModel
 
 
 class RethinkCollection(object):
@@ -48,11 +47,12 @@ class RethinkCollection(object):
         return self
 
     def orderBy(self, field):
+        """
+        Allows the results to be ordered, this is passed onto the ReQL
+        driver so please look at their docs for orderBy.
+        """
         self._query.orderBy(field)
         return self
-
-    def __repr__(self):
-        pass
 
     def __iter__(self):
         for doc in self._documents:
@@ -81,14 +81,28 @@ class RethinkCollection(object):
     # Okay, enough pagination
 
     def fetch(self):
+        """
+        Fetches the query and then tries to wrap the data in the model, joining
+        as needed, if applicable.
+        """
         returnResults = []
 
         results = self._query.run()
         for result in results:
             if self._join:
-                pass
-            item = self._model.fromRawEntry(**result)
+                # Because we can tell the models to ignore certian fields,
+                # through the protectedItems blacklist, we can nest models by
+                # name and have each one act normal and not accidentally store
+                # extra data from other models
+                item = self._model.fromRawEntry(**result["left"])
+                joined = self._join.fromRawEntry(**result["right"])
+                item.protectedItems = self._join.__name__
+                item[self._join.__name__] = joined
+
+            else:
+                item = self._model.fromRawEntry(**result)
 
             returnResults.append(item)
 
-        return returnResults
+        self._documents = returnResults
+        return self._documents

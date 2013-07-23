@@ -21,6 +21,7 @@ class RethinkModel(object):
     """
     _protectedItems = []
     _conn = None
+    _join = None
 
     table = ""  #: The table which this document object will be stored in
     primaryKey = "id"  #: The current primary key of the table
@@ -104,13 +105,27 @@ class RethinkModel(object):
         :return: True if a document was found, otherwise False
         :rtype: Boolean
         """
-        rawCursor = r.table(self.table).get(key).run(self._conn)
-        if rawCursor:
-            self._data = rawCursor
-            self._new = False
-            return True
+        if self._join is not None:
+            rawCursor = r.table(self.table).get(key).run(self._conn)
+            if rawCursor:
+                self._data = rawCursor
+                self._new = False
+                return True
+            else:
+                return False
         else:
-            return False
+            rawCursor = r.table(self.table).eqJoin(key, self._join.__name__,
+                {"index": self._joinField}).run()
+            if rawCursor:
+                self.protectedItems = self._join.__name__
+                self[self._join.__name__] = \
+                    self._join.fromRawData(**rawCursor["right"])
+
+                self._data = rawCursor["left"]
+                self._new = False
+                return True
+            else:
+                return False
 
     def finishInit(self):
         """
@@ -291,16 +306,6 @@ indicating this entry isn't stored." % self.primaryKey)
         Allows for the representation of the object, for debugging purposes
         """
         return "< RethinkModel at %s with data: %s >" % (id(self), self._data)
-
-    def joinOn(self, model, field):
-        """
-        """
-        pass
-
-    def joinOnAs(self, model, field, where):
-        """
-        """
-        pass
 
     @property
     def protectedItems(self):
