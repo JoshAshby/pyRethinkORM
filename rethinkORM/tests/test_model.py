@@ -248,3 +248,35 @@ class find_classmethod_test(base):
         assert prop.what == self.data["what"]
         assert prop.description == self.data["description"]
         assert prop.id == self.data["id"]
+
+
+class joinOn_classmethod_test(base):
+    """
+    Tests to make sure that just a default join works.
+    """
+    model = gateModel
+    data = classmethodData
+    loadCheck = True
+    cleanupAfter = False
+
+    def action(self):
+        pass
+
+    def load(self):
+        pass
+
+
+class joinOnAs_classmethod_test(base):
+    """
+    Tests to make sure that a custom join as works.
+    """
+    model = gateModel
+    data = classmethodData
+    loadCheck = True
+    cleanupAfter = False
+
+    def action(self):
+        pass
+
+    def load(self):
+        pass

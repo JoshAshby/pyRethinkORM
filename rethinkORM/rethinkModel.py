@@ -22,6 +22,7 @@ class RethinkModel(object):
     _protectedItems = []
     _conn = None
     _join = None
+    _joinField = ""
 
     table = ""  #: The table which this document object will be stored in
     primaryKey = "id"  #: The current primary key of the table
@@ -241,6 +242,25 @@ name exists in data""")
             setattr(what, cls.primaryKey, id)
         what.save()
         return what
+
+    @classmethod
+    def joinOn(cls, model, field):
+        """
+        Since joins are handled during the `_getData()` call, this is just a
+        helper to set the joined field and the joined model so that this can be
+        done on the fly as needed.
+        """
+        pass
+
+    @classmethod
+    def joinOnAs(cls, model, field, whatAs):
+        """
+        Helper method like above to aid ismaking joins with the model on the
+        fly, however this provides an interface for changing the default joined
+        name for the joined model. Instead of becoming the model name, the
+        joined data is contained with in `whatAs`
+        """
+        pass
 
     @classmethod
     def find(cls, id):
