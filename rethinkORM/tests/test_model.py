@@ -5,34 +5,6 @@ Test suite for the model
 from rethinkORM.tests.fixtures import *
 
 
-# Sample data to use as a comparison as we test the model
-baseData = {
-    "what": "DHD",
-    "description": """Dial Home Device from the planet P3X-439, where an
-    Ancient Repository of Knowledge was found, and interfaced with by Colonel
-    Jack.""",
-    "id": "P3X-439-DHD",
-    "planet": "P3X-439",
-    "episodes": ["Lost City, Part 1"],
-    }
-
-
-newData = {
-    "what": "Star Gate",
-    "description": """Device used to form a wormhole to another gate and
-    transport matter.""",
-    "id": "StarGate-Earth",
-    "planet": "Earth",
-    "episodes": "All",
-    }
-
-classmethodData = {
-    "what": "Stuff",
-    "description": "zzzz",
-    "id": "fucking-Tests"
-    }
-
-
 class base(object):
     """
     Base test object to help automate some of the repetitive work of reloading

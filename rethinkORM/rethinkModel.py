@@ -106,7 +106,7 @@ class RethinkModel(object):
         :return: True if a document was found, otherwise False
         :rtype: Boolean
         """
-        if self._join is not None:
+        if self._join is None:
             rawCursor = r.table(self.table).get(key).run(self._conn)
             if rawCursor:
                 self._data = rawCursor
