@@ -6,22 +6,24 @@ from rethinkORM.tests.fixtures import *
 from rethinkORM.rethinkCollection import RethinkCollection
 
 
-#def baseCollection_test():
-    #generate_docs(10)
-    #collection = RethinkCollection(gateModel)
-    #assert len(collection) == 10
+class baseCollection_test(object):
+    def joinCollection_test(self):
+        one = gateModel.create(**baseData)
+        two = gateModel.create(**newData)
 
+        three = episodeModel.create(**classmethodData)
+        four = episodeModel.create(**secondJoinData)
 
-def joinCollection_test():
-    gateModel.create(**baseData)
-    gateModel.create(**newData)
+        collection = RethinkCollection(gateModel)
+        collection.joinOn(episodeModel, "episodes")
 
-    episodeModel.create(**classmethodData)
-    episodeModel.create(**secondJoinData)
+        results = collection.fetch()
+        assert len(results) == 2
+        for result in results:
+            assert result.episodeModel
+            assert result.episodeModel.id == result.episodes
 
-    collection = RethinkCollection(gateModel)
-    collection.joinOn(episodeModel, "episodes")
-
-    results = collection.fetch()
-    for result in results:
-        assert result.Episode.id == result.episodes
+        one.delete()
+        two.delete()
+        three.delete()
+        four.delete()

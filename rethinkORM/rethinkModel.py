@@ -115,7 +115,7 @@ class RethinkModel(object):
             else:
                 return False
         else:
-            rawCursor = r.table(self.table).eqJoin(key, self._join.__name__,
+            rawCursor = r.table(self.table).eq_join(key, self._join.__name__,
                 {"index": self._joinField}).run()
             if rawCursor:
                 self.protectedItems = self._join.__name__
@@ -325,7 +325,9 @@ indicating this entry isn't stored." % self.primaryKey)
         """
         Allows for the representation of the object, for debugging purposes
         """
-        return "< RethinkModel at %s with data: %s >" % (id(self), self._data)
+        return "< %s at %s with data: %s >" % (self.__class__.__name__,
+                                               id(self),
+                                               self._data)
 
     @property
     def protectedItems(self):

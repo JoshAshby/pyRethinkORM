@@ -17,6 +17,7 @@ class RethinkCollection(object):
     _query = None
     _filter = {}
     _join = None
+    _joinedField = None
 
     def __init__(self, model, filter=None):
         """
@@ -31,7 +32,7 @@ class RethinkCollection(object):
 
         if filter:
             self._filter = filter
-            self._query.filter(self._filter)
+            self._query = self._query.filter(self._filter)
 
     def joinOn(self, model, onIndex):
         """
@@ -42,8 +43,9 @@ class RethinkCollection(object):
             raise Exception("Already joined with a table!")
 
         self._join = model
+        self._joinedField = self._join.__name__
         table = model.table
-        self._query.eqJoin(onIndex, r.table(table))
+        self._query = self._query.eq_join(onIndex, r.table(table))
         return self
 
     def orderBy(self, field):
@@ -51,7 +53,7 @@ class RethinkCollection(object):
         Allows the results to be ordered, this is passed onto the ReQL
         driver so please look at their docs for orderBy.
         """
-        self._query.orderBy(field)
+        self._query = self._query.orderBy(field)
         return self
 
     def __iter__(self):
@@ -96,8 +98,8 @@ class RethinkCollection(object):
                 # extra data from other models
                 item = self._model.fromRawEntry(**result["left"])
                 joined = self._join.fromRawEntry(**result["right"])
-                item.protectedItems = self._join.__name__
-                item[self._join.__name__] = joined
+                item.protectedItems = self._joinedField
+                item[self._joinedField] = joined
 
             else:
                 item = self._model.fromRawEntry(**result)

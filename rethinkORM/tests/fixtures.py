@@ -2,11 +2,7 @@
 """
 Test suite for the model
 """
-import rethinkdb as r
-import nose.tools as nst
-
 from rethinkORM import RethinkModel
-from rethinkORM import RethinkCollection
 
 
 """
@@ -25,7 +21,6 @@ baseData = {
     Jack.""",
     "id": "P3X-439-DHD",
     "planet": "P3X-439",
-    #"episodes": ["Lost City, Part 1"],
     "episodes": 66
     }
 
@@ -53,30 +48,6 @@ secondJoinData = {
     }
 
 
-def setup():
-    """
-    Sets up the connection to RethinkDB which we'll use in the rest of the
-    tests, and puts it into .repl() mode so we don't have to pass the model
-    object a connection. After that, we create a new database called `model`
-    and within that a table called `stargate` and sets the database to use
-    `model`.
-    """
-    conn = r.connect('localhost', 28015)
-    r.db_create("model").run(conn)
-    conn.use("model")
-    conn.repl()
-    r.table_create("stargates").run()
-    r.table_create("episodes").run()
-
-
-def teardown():
-    """
-    Drops the whole `model` database, since it's no longer needed now that
-    the tests are done.
-    """
-    r.db_drop("model").run()
-
-
 class gateModel(RethinkModel):
     """
     Sample document object which represents the documents within the table
@@ -89,7 +60,3 @@ class episodeModel(RethinkModel):
     """Sample document object to represent episode documents within the table
     `episodes`"""
     table = "episodes"
-
-
-def generate_docs(howMany):
-    pass

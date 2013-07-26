@@ -2,6 +2,7 @@
 """
 Test suite for the model
 """
+import nose.tools as nst
 from rethinkORM.tests.fixtures import *
 
 
@@ -222,7 +223,7 @@ class find_classmethod_test(base):
         assert prop.id == self.data["id"]
 
 
-class joinOn_classmethod_test(base):
+class joinOn_classmethod(base):
     """
     Tests to make sure that just a default join works.
     """
@@ -232,10 +233,17 @@ class joinOn_classmethod_test(base):
     cleanupAfter = False
 
     def action(self):
-        pass
+        gateModel.create(**baseData)
+        episodeModel.create(**classmethodData)
 
     def load(self):
-        pass
+        gate = gateModel(baseData["id"]).join()
+
+    def cleanup(self):
+        gate = gateModel(baseData["id"])
+        gate.delete()
+        epi = episodeModel(classmethodData["id"])
+        epi.delete()
 
 
 class joinOnAs_classmethod_test(base):
