@@ -86,6 +86,8 @@ class insert_test(base):
             "id": baseData["id"]}
     model = gateModel
 
+    cleanupAfter = True
+
     def action(self):
         """
         Creates a new object, and inserts it, using `.save()`
@@ -111,6 +113,11 @@ class modify_test(base):
         Next, we get the object again, and this time,
         we modify it, and save it.
         """
+        gateModel.create(**{"what": "DHD",
+            "description": "Dial Home Device",
+            "planet": baseData["planet"],
+            "id": self.data["id"]})
+
         dhdProp = gateModel(what=self.data["what"],
                             description=self.data["description"],
                             planet=self.data["planet"])
@@ -191,6 +198,7 @@ class create_classmethod_test(base):
     model = gateModel
     data = classmethodData
     whatToCheck = ["what", "description"]
+    cleanupAfter = True
 
     def action(self):
         prop = gateModel.create(what=self.data["what"],
