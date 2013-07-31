@@ -118,13 +118,6 @@ class modify_test(base):
             "planet": baseData["planet"],
             "id": self.data["id"]})
 
-        dhdProp = gateModel(what=self.data["what"],
-                            description=self.data["description"],
-                            planet=self.data["planet"])
-        dhdProp.id = self.data["id"]
-        assert dhdProp.save()
-        del dhdProp
-
         dhdProp = gateModel(self.data["id"])
         dhdProp.what = self.data["what"]
         dhdProp.description = self.data["description"]
@@ -238,7 +231,7 @@ class joinOn_classmethod(base):
     model = gateModel
     data = classmethodData
     loadCheck = True
-    cleanupAfter = False
+    cleanupAfter = True
 
     def action(self):
         gateModel.create(**baseData)

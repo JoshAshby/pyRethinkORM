@@ -7,10 +7,10 @@ from rethinkORM.rethinkCollection import RethinkCollection
 
 
 class baseCollection_test(object):
-    def joinCollection_test(self):
+    def normalCollection_test(self):
         one = gateModel.create(**baseData)
         two = gateModel.create(**newData)
-        parts = [one, two]
+        parts = [two, one]
 
         collection = RethinkCollection(gateModel)
 
