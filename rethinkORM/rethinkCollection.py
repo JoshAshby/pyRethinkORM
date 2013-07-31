@@ -39,11 +39,27 @@ class RethinkCollection(object):
         Performs an eqJoin on with the given model. The resulting join will be
         accessible through the models name.
         """
+        return self._joinOnAsPriv(model, onIndex, model.__name__)
+
+    def joinOnAs(self, model, onIndex, whatAs):
+        """
+        Like `joinOn` but allows setting the joined results name to access it
+        from.
+
+        Performs an eqJoin on with the given model. The resulting join will be
+        accessible through the given name.
+        """
+        return self._joinOnAsPriv(model, onIndex, whatAs)
+
+    def _joinOnAsPriv(self, model, onIndex, whatAs):
+        """
+        Private method for handling joins.
+        """
         if self._join:
             raise Exception("Already joined with a table!")
 
         self._join = model
-        self._joinedField = self._join.__name__
+        self._joinedField = whatAs
         table = model.table
         self._query = self._query.eq_join(onIndex, r.table(table))
         return self

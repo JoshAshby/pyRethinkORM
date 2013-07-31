@@ -48,3 +48,26 @@ class baseCollection_join_test(object):
         two.delete()
         three.delete()
         four.delete()
+
+
+class baseCollection_joinAs_test(object):
+    def joinCollection_test(self):
+        one = gateModel.create(**baseData)
+        two = gateModel.create(**newData)
+
+        three = episodeModel.create(**classmethodData)
+        four = episodeModel.create(**secondJoinData)
+
+        collection = RethinkCollection(gateModel)
+        collection.joinOnAs(episodeModel, "episodes", "epi")
+
+        results = collection.fetch()
+        assert len(results) == 2
+        for result in results:
+            assert result.epi
+            assert result.epi.id == result.episodes
+
+        one.delete()
+        two.delete()
+        three.delete()
+        four.delete()
