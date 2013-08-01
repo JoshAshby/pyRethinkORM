@@ -71,3 +71,9 @@ class baseCollection_joinAs_test(object):
         two.delete()
         three.delete()
         four.delete()
+
+"""
+TODO: tests for:
+  * orderBy
+  * Filtering
+"""

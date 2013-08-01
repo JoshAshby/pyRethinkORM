@@ -22,7 +22,7 @@ class RethinkModel(object):
     _protectedItems = []
     _conn = None
     _join = None
-    _joinField = ""
+    _joinedField = ""
 
     table = ""  #: The table which this document object will be stored in
     primaryKey = "id"  #: The current primary key of the table
@@ -37,7 +37,7 @@ class RethinkModel(object):
     """Will either update, or create a new object if true and a primary key is
     given."""
 
-    def __init__(self, id=False, **kwargs):
+    def __init__(self, id=False, joinOnAs="", **kwargs):
         """
         Initializes the main object, if `id` is in kwargs, then we assume
         this is already in the database, and will try to pull its data, if not,
@@ -76,14 +76,20 @@ class RethinkModel(object):
             raise Exception("""Cannot supply primary key and additional \
 #arguments while searching for Documents.""")
 
-        else:
-            if key and not self._grabData(key):
-                raise Exception("""Could not find key in database""")
+        for kwarg in kwargs:
+            if type(kwarg) is RethinkModel:
+                self._join = kwarg
+                self._joinField = kwarg.__name__
 
-            else:
-                self._makeNew(kwargs)
-                if key:
-                    self._data[self.primaryKey] = key
+        if joinOnAs:
+            self._joinField = joinOnAs
+
+        if key and not self._grabData(key):
+            raise Exception("""Could not find key in database""")
+
+        self._makeNew(kwargs)
+        if key:
+            self._data[self.primaryKey] = key
 
         # Hook to run any inherited class code, if needed
         self.finishInit()
@@ -115,8 +121,8 @@ class RethinkModel(object):
             else:
                 return False
         else:
-            rawCursor = r.table(self.table).eq_join(key, self._join.__name__,
-                {"index": self._joinField}).run()
+            rawCursor = r.table(self.table).outer_join(self._join.table,
+                {self._joinField: key}).run()
             if rawCursor:
                 self.protectedItems = self._join.__name__
                 self[self._join.__name__] = \
@@ -250,12 +256,13 @@ name exists in data""")
         helper to set the joined field and the joined model so that this can be
         done on the fly as needed.
         """
+        
         pass
 
     @classmethod
     def joinOnAs(cls, model, field, whatAs):
         """
-        Helper method like above to aid ismaking joins with the model on the
+        Helper method like above to aid is making joins with the model on the
         fly, however this provides an interface for changing the default joined
         name for the joined model. Instead of becoming the model name, the
         joined data is contained with in `whatAs`
