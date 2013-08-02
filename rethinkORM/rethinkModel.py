@@ -37,7 +37,7 @@ class RethinkModel(object):
     """Will either update, or create a new object if true and a primary key is
     given."""
 
-    def __init__(self, id=False, joinOnAs="", joinOn="", **kwargs):
+    def __init__(self, id=False, joinOnAs="", joinOn="", joinModel=None, **kwargs):
         """
         Initializes the main object, if `id` is in kwargs, then we assume
         this is already in the database, and will try to pull its data, if not,
@@ -76,20 +76,21 @@ class RethinkModel(object):
             raise Exception("""Cannot supply primary key and additional \
 #arguments while searching for Documents.""")
 
-        for kwarg in kwargs:
-            if type(kwarg) is RethinkModel:
-                if not key:
-                    raise Exception("Key needed for a join")
-                self._join = kwarg
-                self._joinedField = kwarg.__name__
-                self._joinIndex = kwarg.primaryKey
-                kwargs.pop(kwargs.index(kwarg))
+        if joinModel is not None:
+            #if type(joinModel) is RethinkModel:
+            if not key:
+                raise Exception("Key needed for a join")
+            self._join = joinModel
+            self._joinedField = joinModel.__name__
+            self._joinIndex = joinModel.primaryKey
+            #else:
+                #raise Exception("joinModel must be a RethinkModel object!")
 
-        if joinOn:
-            self._joinIndex = joinOn
+            if joinOn:
+                self._joinIndex = joinOn
 
-        if joinOnAs:
-            self._joinedField = joinOnAs
+            if joinOnAs:
+                self._joinedField = joinOnAs
 
         if key and not self._grabData(key):
             raise Exception("""Could not find key in database""")
@@ -128,14 +129,15 @@ class RethinkModel(object):
             else:
                 return False
         else:
-            rawCursor = r.table(self.table).outer_join(self._join.table,
-                {self._joinIndex: key}).run()
+            rawCursor = r.table(self.table)\
+                .outer_join(r.table(self._join.table), 
+                    {self._joinIndex: key}).run()
             if rawCursor:
                 self.protectedItems = self._joinedField
                 self[self._joinedField] = \
-                    self._join.fromRawData(**rawCursor["right"])
+                    self._join.fromRawEntry(**rawCursor)
 
-                self._data = rawCursor["left"]
+                self._data = rawCursor[0]["left"]
                 self._new = False
                 return True
             else:
@@ -261,7 +263,7 @@ name exists in data""")
         """
         Joins model on the primary key
         """
-        return cls(model, **kwargs)
+        return cls(joinModel=model, **kwargs)
 
     @classmethod
     def joinOn(cls, model, field, **kwargs):
@@ -270,7 +272,7 @@ name exists in data""")
         helper to set the joined field and the joined model so that this can be
         done on the fly as needed.
         """
-        return cls(model, joinOn=field, **kwargs)
+        return cls(joinModel=model, joinOn=field, **kwargs)
 
     @classmethod
     def joinOnAs(cls, model, field, whatAs, **kwargs):
@@ -280,7 +282,7 @@ name exists in data""")
         name for the joined model. Instead of becoming the model name, the
         joined data is contained with in `whatAs`
         """
-        return cls(model, joinOn=field, joinOnAs=whatAs, **kwargs)
+        return cls(joinModel=model, joinOn=field, joinOnAs=whatAs, **kwargs)
 
     @classmethod
     def find(cls, id):

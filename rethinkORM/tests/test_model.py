@@ -238,7 +238,7 @@ class joinOn_classmethod_test(base):
         episodeModel.create(**classmethodData)
 
     def load(self):
-        what = gateModel.joinOn(episodeModel, joinOn="episodes", id="66")
+        what = gateModel.joinOn(episodeModel, "episodes", id="P3X-439-DHD")
         assert what.episodeModel
         assert what.episodeModel.id == what.episodes
 
