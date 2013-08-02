@@ -37,7 +37,7 @@ class RethinkModel(object):
     """Will either update, or create a new object if true and a primary key is
     given."""
 
-    def __init__(self, id=False, joinOnAs="", **kwargs):
+    def __init__(self, id=False, joinOnAs="", joinOn="", **kwargs):
         """
         Initializes the main object, if `id` is in kwargs, then we assume
         this is already in the database, and will try to pull its data, if not,
@@ -78,11 +78,18 @@ class RethinkModel(object):
 
         for kwarg in kwargs:
             if type(kwarg) is RethinkModel:
+                if not key:
+                    raise Exception("Key needed for a join")
                 self._join = kwarg
-                self._joinField = kwarg.__name__
+                self._joinedField = kwarg.__name__
+                self._joinIndex = kwarg.primaryKey
+                kwargs.pop(kwargs.index(kwarg))
+
+        if joinOn:
+            self._joinIndex = joinOn
 
         if joinOnAs:
-            self._joinField = joinOnAs
+            self._joinedField = joinOnAs
 
         if key and not self._grabData(key):
             raise Exception("""Could not find key in database""")
@@ -122,10 +129,10 @@ class RethinkModel(object):
                 return False
         else:
             rawCursor = r.table(self.table).outer_join(self._join.table,
-                {self._joinField: key}).run()
+                {self._joinIndex: key}).run()
             if rawCursor:
-                self.protectedItems = self._join.__name__
-                self[self._join.__name__] = \
+                self.protectedItems = self._joinedField
+                self[self._joinedField] = \
                     self._join.fromRawData(**rawCursor["right"])
 
                 self._data = rawCursor["left"]
@@ -250,24 +257,30 @@ name exists in data""")
         return what
 
     @classmethod
-    def joinOn(cls, model, field):
+    def join(cls, model, **kwargs):
+        """
+        Joins model on the primary key
+        """
+        return cls(model, **kwargs)
+
+    @classmethod
+    def joinOn(cls, model, field, **kwargs):
         """
         Since joins are handled during the `_getData()` call, this is just a
         helper to set the joined field and the joined model so that this can be
         done on the fly as needed.
         """
-        
-        pass
+        return cls(model, joinOn=field, **kwargs)
 
     @classmethod
-    def joinOnAs(cls, model, field, whatAs):
+    def joinOnAs(cls, model, field, whatAs, **kwargs):
         """
         Helper method like above to aid is making joins with the model on the
         fly, however this provides an interface for changing the default joined
         name for the joined model. Instead of becoming the model name, the
         joined data is contained with in `whatAs`
         """
-        pass
+        return cls(model, joinOn=field, joinOnAs=whatAs, **kwargs)
 
     @classmethod
     def find(cls, id):

@@ -224,7 +224,7 @@ class find_classmethod_test(base):
         assert prop.id == self.data["id"]
 
 
-class joinOn_classmethod(base):
+class joinOn_classmethod_test(base):
     """
     Tests to make sure that just a default join works.
     """
@@ -238,7 +238,9 @@ class joinOn_classmethod(base):
         episodeModel.create(**classmethodData)
 
     def load(self):
-        gate = gateModel(baseData["id"]).join()
+        what = gateModel.joinOn(episodeModel, joinOn="episodes", id="66")
+        assert what.episodeModel
+        assert what.episodeModel.id == what.episodes
 
     def cleanup(self):
         gate = gateModel(baseData["id"])
@@ -247,14 +249,14 @@ class joinOn_classmethod(base):
         epi.delete()
 
 
-class joinOnAs_classmethod_test(base):
+class joinOnAs_classmethod(base):
     """
     Tests to make sure that a custom join as works.
     """
     model = gateModel
     data = classmethodData
     loadCheck = True
-    cleanupAfter = False
+    cleanupAfter = True
 
     def action(self):
         pass
