@@ -72,6 +72,29 @@ class baseCollection_joinAs_test(object):
         three.delete()
         four.delete()
 
+
+class baseCollection_orderBy_test(object):
+    def orderBy_test(self):
+        one = gateModel.create(**baseData)
+        two = gateModel.create(**newData)
+
+        three = episodeModel.create(**classmethodData)
+        four = episodeModel.create(**secondJoinData)
+
+        collection = RethinkCollection(gateModel)
+        collection.joinOnAs(episodeModel, "episodes", "epi")
+
+        collection.orderBy('episodes')
+
+        results = collection.fetch()
+        print results
+
+        one.delete()
+        two.delete()
+        three.delete()
+        four.delete()
+
+
 """
 TODO: tests for:
   * orderBy

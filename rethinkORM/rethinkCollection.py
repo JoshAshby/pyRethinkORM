@@ -64,12 +64,17 @@ class RethinkCollection(object):
         self._query = self._query.eq_join(onIndex, r.table(table))
         return self
 
-    def orderBy(self, field):
+    def orderBy(self, field, direct="desc"):
         """
-        Allows the results to be ordered, this is passed onto the ReQL
-        driver so please look at their docs for orderBy.
+        Allows for the results to be ordered by a specific field. If given,
+        direction can be set with passing an additional argument in the form
+        of "asc" or "desc"
         """
-        self._query = self._query.orderBy(field)
+        if direct == "desc":
+            self._query = self._query.order_by(r.desc(field))
+        else:
+            self._query = self._query.order_by(r.asc(field))
+
         return self
 
     def __iter__(self):
