@@ -82,12 +82,14 @@ class baseCollection_orderBy_test(object):
         four = episodeModel.create(**secondJoinData)
 
         collection = RethinkCollection(gateModel)
-        collection.joinOnAs(episodeModel, "episodes", "epi")
-
-        collection.orderBy('episodes')
-
+        collection.orderBy('episodes', 'asc')
         results = collection.fetch()
-        print results
+        assert results[0].episodes < results[1].episodes
+
+        collection = RethinkCollection(gateModel)
+        collection.orderBy('episodes')
+        results = collection.fetch()
+        assert results[0].episodes > results[1].episodes
 
         one.delete()
         two.delete()
@@ -97,6 +99,5 @@ class baseCollection_orderBy_test(object):
 
 """
 TODO: tests for:
-  * orderBy
   * Filtering
 """
