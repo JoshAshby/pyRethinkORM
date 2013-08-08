@@ -129,6 +129,14 @@ Deleting an entry
     oldProp.delete()
 
 
+Collections
+-----------
+New in v0.2.0 are collections. These are containers for interacting with sets
+of documents. Collections provide an easy way to gather up just the documents
+you need, and have them automatically wrapped with the ORM RethinkModel object.
+
+You can read more about collections, and see how to use them on their `page <>`__
+
 Contributing
 ------------
 
