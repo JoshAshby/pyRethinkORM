@@ -41,11 +41,12 @@ Finally, Fetch the Results
 
 
 :mod:`rethinkCollection` Module
---------------------------
+-------------------------------
 
 .. autoclass:: rethinkORM.rethinkCollection.RethinkCollection
     :members: __init__, joinOn, joinOnAs, orderBy, fetch
     :undoc-members:
+    :noindex:
 
 Subpackages
 -----------
