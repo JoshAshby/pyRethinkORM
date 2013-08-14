@@ -8,7 +8,7 @@ setup(
     author_email='joshuaashby@joshashby.com',
     packages=['rethinkORM', 'rethinkORM.tests'],
     url='https://github.com/JoshAshby/pyRethinkORM',
-    license='LICENSE.txt',
+    license='GPL v3 (See LICENSE.txt for more info)',
     description='Useful little ORM style wrapper for working with RethinkDB',
     long_description=open('README.rst').read(),
     install_requires=[

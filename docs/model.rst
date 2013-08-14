@@ -3,6 +3,11 @@
 RethinkModel
 ============
 
+The model is the core of everything RethinkORM deals with. All data returned
+from RethinkDB is eventually wrapped in the model before being returned to the
+end user. It provides an pythonic, object style interface for the data,
+exposing methods to save and update documents along with creating new ones.
+
 Quick Start:
 ------------
 

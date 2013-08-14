@@ -12,10 +12,13 @@ along with filtering of results.
 
 Initialize a new Collection
 ----------------------------
+Optionally you can also pass a dictionary which will be used as a filter. For
+more information on how filters work, please see the `RethinkDB docs <http://www.rethinkdb.com/api/#py:selecting_data-filter>`__
 
 ::
 
     collection = RethinkCollection(gateModel)
+
 
 Join on a table
 ---------------
@@ -23,6 +26,7 @@ Join on a table
 ::
 
     collection.joinOn(episodeModel, "episodes")
+
 
 Order the Results
 -----------------
@@ -38,6 +42,9 @@ Finally, Fetch the Results
 ::
 
     result = collection.fetch()
+
+Result acts like a List, containing all of the Documents which are part of the
+collection, all pre wrapped in a RethinkModel object.
 
 
 :mod:`rethinkCollection` Module

@@ -1,5 +1,5 @@
-RethinkORM
-==========
+RethinkORM v0.2.0
+=================
 
 Build status - Master:
 
@@ -49,6 +49,10 @@ A Few Minor Warnings
 #. This is a very early release, things might break, and the code is honestly a
    little childish at best. In other words: It'll hopefully get better, but it
    might be a little limited right now.
+#. This project follows the semantic versioning specs. All Minor and
+   patch versions will not break the major versions API, however an bump of the
+   major version signifies that backwards compatibility will most likely be
+   broken.
 
 
 Documentation

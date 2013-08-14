@@ -97,7 +97,9 @@ class baseCollection_orderBy_test(object):
         four.delete()
 
 
-"""
-TODO: tests for:
-  * Filtering
-"""
+class baseCollection_filtering_test(object):
+    """
+    TODO: tests for:
+      * Filtering
+    """
+    pass

@@ -78,6 +78,7 @@ a simple ``pip`` command to install.
 
 Quick Start
 -----------
+There are currently two main modules to this package, Models and Collections.
 
 `Models <models.html>`__
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -90,7 +91,12 @@ New in v0.2.0 are collections. These are containers for interacting with sets
 of documents. Collections provide an easy way to gather up just the documents
 you need, and have them automatically wrapped with the ORM RethinkModel object.
 
-You can read more about `collections here <collections.html>`__
+You can read more about `collections here <collections.html>`__.
+
+Versioning
+~~~~~~~~~~
+This project will try to follow the semantic versioning guide lines, as laid
+out here: `SemVer <http://semver.org/>`__, as best as possible.
 
 Contributing
 ------------
@@ -112,6 +118,7 @@ Doc Contents
 
    model
    collections
+   rethinkORM.tests
    rethinkORM
 
 
