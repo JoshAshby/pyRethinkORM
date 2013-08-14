@@ -62,6 +62,7 @@ Installation:
 -------------
 
 ::
+
     pip install RethinkORM
 
 For more information, a short quick start, and information about running the
