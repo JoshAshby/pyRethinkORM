@@ -65,58 +65,38 @@ A Few Minor Warnings
    little childish at best. In other words: It'll hopefully get better, but it
    might be a little limited right now.
 
-Quick Start:
-------------
+
+Installation:
+-------------
+This package is kindly hosted on the Python Package Index making it as easy as
+a simple ``pip`` command to install.
 
 ::
+
     pip install RethinkORM
 
-First we need to make an object which will represent all of our data in
-a specific table, along with getting a connection to RethinkDB started.
 
-::
+Quick Start
+-----------
+There are currently two main modules to this package, Models and Collections.
 
-    import rethinkdb as r
-    from rethinkORM import RethinkModel
+`Models <models.html>`__
+~~~~~~~~~~~~~~~~~~~~~~~~
+The core of RethinkORM, models are the main unit of code you'll probably be use
+from this package.
 
-    r.connect(db="props").repl()
+`Collections <collections.html>`__
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+New in v0.2.0 are collections. These are containers for interacting with sets
+of documents. Collections provide an easy way to gather up just the documents
+you need, and have them automatically wrapped with the ORM RethinkModel object.
 
+You can read more about `collections here <collections.html>`__.
 
-    class tvProps(RethinkModel):
-        table = "stargate_props"
-
-
-For more information on what class properties are available to change, see
-:ref:`rethinkORM`
-
-Inserting/creating an entry
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-::
-
-    dhdProp = tvProps(what="DHD", planet="P3X-439", description="Dial HomeDevice")
-    dhdProp.id="DHD_P3X_439"
-    dhdProp.save()
-
-Updating an entry
-~~~~~~~~~~~~~~~~~
-
-::
-
-    updatedProp = tvProps("DHD_P3X_439")
-    updatedProp.description="""Dial Home Device from the planel P3X-439, where an
-        Ancient Repository of Knowledge was found, and interfaced with by Colonel
-        Jack."""
-    updatedProp.save()
-
-Deleting an entry
-~~~~~~~~~~~~~~~~~
-
-::
-
-    oldProp = tvProps("DHD_P3X_439")
-    oldProp.delete()
-
+Versioning
+~~~~~~~~~~
+This project will try to follow the semantic versioning guide lines, as laid
+out here: `SemVer <http://semver.org/>`__, as best as possible.
 
 Contributing
 ------------
@@ -136,6 +116,9 @@ Doc Contents
 .. toctree::
    :maxdepth: 4
 
+   model
+   collections
+   rethinkORM.tests
    rethinkORM
 
 

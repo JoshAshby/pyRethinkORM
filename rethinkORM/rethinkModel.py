@@ -21,6 +21,8 @@ class RethinkModel(object):
     """
     _protectedItems = []
     _conn = None
+    _join = None
+    _joinedField = ""
 
     table = ""  #: The table which this document object will be stored in
     primaryKey = "id"  #: The current primary key of the table
@@ -68,17 +70,18 @@ class RethinkModel(object):
             raise Exception("""Cannot have an empty or type None key""")
 
         elif key and len(kwargs) > 0:
+            # Assume we have data from a collection, just go with it and set
+            # our data.
+            #self._makeNew(kwargs)
             raise Exception("""Cannot supply primary key and additional \
 arguments while searching for Documents.""")
 
-        else:
-            if key and not self._grabData(key):
-                raise Exception("""Could not find key in database""")
+        if key and not self._grabData(key):
+            raise Exception("""Could not find key in database""")
 
-            else:
-                self._makeNew(kwargs)
-                if key:
-                    self._data[self.primaryKey] = key
+        self._makeNew(kwargs)
+        if key:
+            self._data[self.primaryKey] = key
 
         # Hook to run any inherited class code, if needed
         self.finishInit()
@@ -188,6 +191,22 @@ name exists in data""")
         return False
 
     @classmethod
+    def fromRawEntry(cls, **kwargs):
+        """
+        Helper function to allow wrapping existing data/entries, such as
+        those returned by collections.
+        """
+        id = kwargs["id"]
+
+        kwargs.pop("id")
+
+        what = cls(**kwargs)
+        what._new = False
+        what.id = id
+
+        return what
+
+    @classmethod
     def new(cls, **kwargs):
         """
         Creates a new instance, filling out the models data with the keyword
@@ -271,7 +290,9 @@ indicating this entry isn't stored." % self.primaryKey)
         """
         Allows for the representation of the object, for debugging purposes
         """
-        return "< RethinkModel at %s with data: %s >" % (id(self), self._data)
+        return "< %s at %s with data: %s >" % (self.__class__.__name__,
+                                               id(self),
+                                               self._data)
 
     @property
     def protectedItems(self):
