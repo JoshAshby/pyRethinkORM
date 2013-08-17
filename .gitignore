@@ -21,7 +21,6 @@ node_modules
 .pylintrc
 virt/
 .envrc
-RethinkCollection.py
 rethinkdb_data
 docs/_build
 dist
