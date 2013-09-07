@@ -80,7 +80,7 @@ Quick Start
 -----------
 There are currently two main modules to this package, Models and Collections.
 
-`Models <models.html>`__
+`Models <model.html>`__
 ~~~~~~~~~~~~~~~~~~~~~~~~
 The core of RethinkORM, models are the main unit of code you'll probably be use
 from this package.
