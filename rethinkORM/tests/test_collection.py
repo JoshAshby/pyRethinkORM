@@ -27,52 +27,6 @@ class baseCollection_test(object):
         two.delete()
 
 
-class baseCollection_join_test(object):
-    def joinCollection_test(self):
-        one = gateModel.create(**baseData)
-        two = gateModel.create(**newData)
-
-        three = episodeModel.create(**classmethodData)
-        four = episodeModel.create(**secondJoinData)
-
-        collection = RethinkCollection(gateModel)
-        collection.joinOn(episodeModel, "episodes")
-
-        results = collection.fetch()
-        assert len(results) == 2
-        for result in results:
-            assert result.episodeModel
-            assert result.episodeModel.id == result.episodes
-
-        one.delete()
-        two.delete()
-        three.delete()
-        four.delete()
-
-
-class baseCollection_joinAs_test(object):
-    def joinCollection_test(self):
-        one = gateModel.create(**baseData)
-        two = gateModel.create(**newData)
-
-        three = episodeModel.create(**classmethodData)
-        four = episodeModel.create(**secondJoinData)
-
-        collection = RethinkCollection(gateModel)
-        collection.joinOnAs(episodeModel, "episodes", "epi")
-
-        results = collection.fetch()
-        assert len(results) == 2
-        for result in results:
-            assert result.epi
-            assert result.epi.id == result.episodes
-
-        one.delete()
-        two.delete()
-        three.delete()
-        four.delete()
-
-
 class baseCollection_orderBy_test(object):
     def orderBy_test(self):
         one = gateModel.create(**baseData)
@@ -82,12 +36,12 @@ class baseCollection_orderBy_test(object):
         four = episodeModel.create(**secondJoinData)
 
         collection = RethinkCollection(gateModel)
-        collection.orderBy('episodes', 'asc')
+        collection.order_by('episodes', 'asc')
         results = collection.fetch()
         assert results[0].episodes < results[1].episodes
 
         collection = RethinkCollection(gateModel)
-        collection.orderBy('episodes')
+        collection.order_by('episodes')
         results = collection.fetch()
         assert results[0].episodes > results[1].episodes
 

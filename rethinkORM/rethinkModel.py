@@ -19,13 +19,11 @@ class RethinkModel(object):
     statements. It will give the id and a representation of the internal _data
     dict for debugging purposes.
     """
-    _protectedItems = []
+    _protected_items = []
     _conn = None
-    _join = None
-    _joinedField = ""
 
     table = ""  #: The table which this document object will be stored in
-    primaryKey = "id"  #: The current primary key of the table
+    primary_key = "id"  #: The current primary key of the table
 
     durability = "soft"
     """Can either be Hard or Soft, and is passed to RethinkDB"""
@@ -33,86 +31,51 @@ class RethinkModel(object):
     non_atomic = False
     """Determins if the transaction can be non atomic or not"""
 
-    upsert = True
-    """Will either update, or create a new object if true and a primary key is
-    given."""
-
-    def __init__(self, id=False, **kwargs):
+    def __init__(self, id=None, **kwargs):
         """
-        Initializes the main object, if `id` is in kwargs, then we assume
-        this is already in the database, and will try to pull its data, if not,
-        then we assume this is a new entry that will be inserted.
+        Initializes the main object, if `id` is the only thing passed then we
+        assume this document is already in the database and grab its data,
+        otherwise we treat it as a new object.
 
         (Optional, only if not using .repl()) `conn` or `connection` can also
         be passed, which will be used in all the .run() clauses.
         """
 
-        protectedItems = dir(self)
-        protectedItems.append(self._protectedItems)
-        self._protectedItems = protectedItems
+        protected_items = dir(self)
+        protected_items.append(self._protected_items)
+        self._protected_items = protected_items
         """
         List of strings to not store in the database; automatically set to
         the built in properties of this object to prevent any accidental stuff
         """
 
         # Is this a new object, or already in the database? (set later)
-        self._new = True
         self._data = {}  # STORE ALL THE DATA!!
 
         # If we're given a connection, we'll use it, if not, we'll assume
         # .repl() was called on r.connect()
-        if hasattr(kwargs, "conn") or hasattr(kwargs, "connection"):
-            self._conn = kwargs["conn"]
+        if "conn" in kwargs:
+            self._conn = kwargs.pop("conn")
+        elif "connection" in kwargs:
+            self._conn = kwargs.pop("connection")
 
-        key = kwargs[self.primaryKey] if self.primaryKey in kwargs else id
+        key = kwargs[self._primary_key] if self.primary_key in kwargs else id
 
-        if key is None or key == "" and len(kwargs) == 0:
-            raise Exception("""Cannot have an empty or type None key""")
+        if len(kwargs) == 0 and key:
+          rawCursor = r.table(self.table).get(key).run(self._conn)
+          if rawCursor:
+              self._data = dict(rawCursor)
 
-        elif key and len(kwargs) > 0:
-            # Assume we have data from a collection, just go with it and set
-            # our data.
-            #self._makeNew(kwargs)
-            raise Exception("""Cannot supply primary key and additional \
-arguments while searching for Documents.""")
-
-        if key and not self._grabData(key):
-            raise Exception("""Could not find key in database""")
-
-        self._makeNew(kwargs)
-        if key:
-            self._data[self.primaryKey] = key
+        else:
+            for item in kwargs:
+                if item not in self._protected_items and item[0] != "_":
+                    self._data[item] = kwargs[item]
+            self._data[self.primary_key] = key
 
         # Hook to run any inherited class code, if needed
-        self.finishInit()
+        self.finish_init()
 
-    def _makeNew(self, kwargs):
-        # We assume this is a new object, and that we'll insert it
-        for key in kwargs:
-            if key not in ["conn", "connection"] or key[0] != "_":
-                self._data[key] = kwargs[key]
-
-    def _grabData(self, key):
-        """
-        Tries to find the existing document in the database, if it is found,
-        then the objects _data is set to that document, and this returns
-        `True`, otherwise this will return `False`
-
-        :param key: The primary key of the object we're looking for
-        :type key: Str
-
-        :return: True if a document was found, otherwise False
-        :rtype: Boolean
-        """
-        rawCursor = r.table(self.table).get(key).run(self._conn)
-        if rawCursor:
-            self._data = rawCursor
-            self._new = False
-            return True
-        else:
-            return False
-
-    def finishInit(self):
+    def finish_init(self):
         """
         A hook called at the end of the main `__init__` to allow for
         custom inherited classes to customize their init process without having
@@ -127,7 +90,7 @@ arguments while searching for Documents.""")
         Helper function to keep the __getattr__ and __getitem__ calls
         KISSish
         """
-        if item not in object.__getattribute__(self, "_protectedItems") \
+        if item not in object.__getattribute__(self, "_protected_items") \
                 and item[0] != "_":
             data = object.__getattribute__(self, "_data")
             if item in data:
@@ -142,7 +105,7 @@ arguments while searching for Documents.""")
         Will only set the objects _data if the given items name is not prefixed
         with _ or if the item exists in the protected items List.
         """
-        if item not in object.__getattribute__(self, "_protectedItems") \
+        if item not in object.__getattribute__(self, "_protected_items") \
                 and item[0] != "_":
             keys = object.__getattribute__(self, "_data")
             if not hasattr(value, '__call__'):
@@ -191,80 +154,37 @@ name exists in data""")
         return False
 
     @classmethod
-    def fromRawEntry(cls, **kwargs):
-        """
-        Helper function to allow wrapping existing data/entries, such as
-        those returned by collections.
-        """
-        id = kwargs["id"]
-
-        kwargs.pop("id")
-
-        what = cls(**kwargs)
-        what._new = False
-        what.id = id
-
-        return what
-
-    @classmethod
-    def new(cls, **kwargs):
+    def new(cls, id=None, **kwargs):
         """
         Creates a new instance, filling out the models data with the keyword
         arguments passed, so long as those keywords are not in the protected
         items array.
         """
-        return cls(**kwargs)
+        return cls(id=id, **kwargs)
 
     @classmethod
     def create(cls, id=None, **kwargs):
         """
         Similar to new() however this calls save() on the object before
-        returning it.
+        returning it, to ensure that it is already in the database.
+        Good for make and forget style calls.
         """
-        what = cls(**kwargs)
-        if id:
-            setattr(what, cls.primaryKey, id)
+        what = cls(id=id, **kwargs)
         what.save()
         return what
 
-    @classmethod
-    def find(cls, id):
-        """
-        Loads an existing entry if one can be found, otherwise an exception is
-        raised.
-
-        :param id: The id of the given entry
-        :type id: Str
-
-        :return: `cls` instance of the given `id` entry
-        """
-        return cls(id)
-
     def save(self):
         """
-        If an id exists in the database, we assume we'll update it, and if not
-        then we'll insert it. This could be a problem with creating your own
-        id's on new objects, however luckily, we keep track of if this is a new
-        object through a private _new variable, and use that to determine if we
-        insert or update.
+        Update or insert the document into the database.
         """
-        if not self._new:
-            reply = r.table(self.table) \
-                .update(self._data,
-                        durability=self.durability,
-                        non_atomic=self.non_atomic) \
-                .run(self._conn)
-
-        else:
-            reply = r.table(self.table) \
-                .insert(self._data,
-                        durability=self.durability,
-                        upsert=self.upsert) \
-                .run(self._conn)
-            self._new = False
+        reply = r.table(self.table) \
+            .insert(self._data,
+                    upsert=True,
+                    durability=self.durability) \
+            .run(self._conn)
 
         if "generated_keys" in reply and reply["generated_keys"]:
-            self._data[self.primaryKey] = reply["generated_keys"][0]
+            self._data[self.primary_key] = reply["generated_keys"][0]
 
         if "errors" in reply and reply["errors"] > 0:
             raise Exception("Could not insert entry: %s"
@@ -274,17 +194,14 @@ name exists in data""")
 
     def delete(self):
         """
-        Deletes the current instance. This assumes that we know what we're
-        doing, and have a primary key in our data already. If this is a new
-        instance, then we'll let the user know with an Exception
+        Deletes the current instance, if its in the database (or try).
         """
-        if self._new:
-            raise Exception("This is a new object, %s not in data, \
-indicating this entry isn't stored." % self.primaryKey)
-
-        r.table(self.table).get(self._data[self.primaryKey]) \
-            .delete(durability=self.durability).run(self._conn)
-        return True
+        if self.primary_key in self._data:
+            r.table(self.table).get(self._data[self.primary_key]) \
+                .delete(durability=self.durability).run(self._conn)
+            return True
+        else:
+            raise Exception("Document id not given, cannot delete.")
 
     def __repr__(self):
         """
@@ -295,18 +212,18 @@ indicating this entry isn't stored." % self.primaryKey)
                                                self._data)
 
     @property
-    def protectedItems(self):
+    def protected_items(self):
         """
         Provides a cleaner interface to dynamically add items to the models
         list of protected functions to not store in the database
         """
-        return self._protectedItems
+        return self._protected_items
 
-    @protectedItems.setter
-    def protectedItems(self, value):
+    @protected_items.setter
+    def protected_items(self, value):
         if type(value) is list:
-            self._protectedItems.extend(value)
+            self._protected_items.extend(value)
         else:
             assert type(value) is str
-            self._protectedItems.append(value)
-        return self._protectedItems
+            self._protected_items.append(value)
+        return self._protected_items

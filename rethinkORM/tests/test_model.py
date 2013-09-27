@@ -92,10 +92,8 @@ class insert_test(base):
         """
         Creates a new object, and inserts it, using `.save()`
         """
-        dhdProp = gateModel(what=self.data["what"],
-                            description=self.data["description"],
-                            planet=self.data["planet"])
-        dhdProp.id = self.data["id"]
+        dhdProp = gateModel(**self.data)
+
         assert dhdProp.save()
         del dhdProp
 
@@ -118,10 +116,11 @@ class modify_test(base):
             "planet": baseData["planet"],
             "id": self.data["id"]})
 
-        dhdProp = gateModel(self.data["id"])
-        dhdProp.what = self.data["what"]
-        dhdProp.description = self.data["description"]
-        dhdProp.episodes = self.data["episodes"]
+        #dhdProp = gateModel(self.data["id"])
+        #dhdProp.what = self.data["what"]
+        #dhdProp.description = self.data["description"]
+        #dhdProp.episodes = self.data["episodes"]
+        dhdProp = gateModel(**self.data)
         assert dhdProp.save()
         del dhdProp
 
@@ -135,25 +134,25 @@ class modify_test(base):
             dhdProp = self.model(self.data["id"])
 
 
-@nst.raises(Exception)
-def insertBadId_test():
-    """
-    Here we test to make sure that if we give a primary key of type `None`
-    that we are raising an exception, if we don't get an exception then
-    something is wrong since the primary key shouldn't be allowed to be `None`
-    """
-    oldProp = gateModel(id=None, what="Something?")
-    assert oldProp.save()
-    del oldProp
+#@nst.raises(Exception)
+#def insertBadId_test():
+    #"""
+    #Here we test to make sure that if we give a primary key of type `None`
+    #that we are raising an exception, if we don't get an exception then
+    #something is wrong since the primary key shouldn't be allowed to be `None`
+    #"""
+    #oldProp = gateModel(id=None, what="Something?")
+    #assert oldProp.save()
+    #del oldProp
 
 
-@nst.raises(Exception)
-def insertIdAndData_test():
-    """
-    Make sure that the model raises an Exception when a key and data are
-    provided
-    """
-    prop = gateModel(id="3", what="duh")
+#@nst.raises(Exception)
+#def insertIdAndData_test():
+    #"""
+    #Make sure that the model raises an Exception when a key and data are
+    #provided
+    #"""
+    #prop = gateModel(id="3", what="duh")
 
 
 """
@@ -172,9 +171,9 @@ class new_classmethod_test(base):
     cleanupAfter = True
 
     def action(self):
-        prop = gateModel.new(what=self.data["what"],
+        prop = gateModel.new(id=self.data["id"],
+                             what=self.data["what"],
                              description=self.data["description"])
-        prop.id = self.data["id"]
         assert prop.what == self.data["what"]
         assert prop.description == self.data["description"]
         assert prop.id == self.data["id"]
@@ -197,28 +196,6 @@ class create_classmethod_test(base):
         prop = gateModel.create(what=self.data["what"],
                                 description=self.data["description"],
                                 id=self.data["id"])
-        assert prop.what == self.data["what"]
-        assert prop.description == self.data["description"]
-        assert prop.id == self.data["id"]
-
-
-class find_classmethod_test(base):
-    """
-    Tests the find() classmethod of the model
-    """
-    model = gateModel
-    data = classmethodData
-    whatToCheck = ["what", "description"]
-    loadCheck = False
-    cleanupAfter = True
-
-    def action(self):
-        oldProp = gateModel(what=self.data["what"],
-                            description=self.data["description"])
-        oldProp.id = self.data["id"]
-        oldProp.save()
-
-        prop = gateModel.find(self.data["id"])
         assert prop.what == self.data["what"]
         assert prop.description == self.data["description"]
         assert prop.id == self.data["id"]

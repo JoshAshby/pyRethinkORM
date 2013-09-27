@@ -7,14 +7,14 @@ rethinkORM
 --------------------------
 
 .. autoclass:: rethinkORM.rethinkModel.RethinkModel
-    :members: __init__, finishInit, __delitem__, __contains__, new, find, save, delete, __repr__, protectedItems, primaryKey, table, durability, non_atomic, upsert, create
+    :members: __init__, finish_init, __delitem__, __contains__, new, create, save, delete, __repr__, protected_items, primary_key, table, durability, non_atomic
     :undoc-members:
 
 :mod:`rethinkCollection` Module
 -------------------------------
 
 .. autoclass:: rethinkORM.rethinkCollection.RethinkCollection
-    :members: __init__, joinOn, joinOnAs, orderBy, fetch
+    :members: __init__, order_by, limit, fetch
     :undoc-members:
 
 Subpackages

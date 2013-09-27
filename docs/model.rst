@@ -38,8 +38,7 @@ Inserting/creating an entry
 
 ::
 
-    dhdProp = tvProps(what="DHD", planet="P3X-439", description="Dial HomeDevice")
-    dhdProp.id="DHD_P3X_439"
+    dhdProp = tvProps(id="DHD_P3X_439", what="DHD", planet="P3X-439", description="Dial HomeDevice")
     dhdProp.save()
 
 Updating an entry
@@ -66,6 +65,6 @@ Deleting an entry
 --------------------------
 
 .. autoclass:: rethinkORM.rethinkModel.RethinkModel
-    :members: __init__, finishInit, __delitem__, __contains__, new, find, save, delete, __repr__, protectedItems, primaryKey, table, durability, non_atomic, upsert, create
+    :members: __init__, finish_init, __delitem__, __contains__, new, create, save, delete, __repr__, protected_items, primary_key, table, durability, non_atomic
     :undoc-members:
     :noindex:

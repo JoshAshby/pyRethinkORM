@@ -7,8 +7,7 @@ Collections provide a quick and easy way to interact with many documents of the
 same type all at once. They also provide a mechanism for basic joins across one
 addition table (due to current limitations of RethinkDB and how it handles
 joins). Collections act like Lists of RethinkModel objects, but provide an
-interface to order the results, and optionally, eqJoin across one other table,
-along with filtering of results.
+easy interface to order, filter, and limit the results.
 
 Initialize a new Collection
 ----------------------------
@@ -20,20 +19,20 @@ more information on how filters work, please see the `RethinkDB docs <http://www
     collection = RethinkCollection(gateModel)
 
 
-Join on a table
----------------
-
-::
-
-    collection.joinOn(episodeModel, "episodes")
-
-
 Order the Results
 -----------------
 
 ::
 
     collection.orderBy("episodes", "ASC")
+
+
+Limit the Results
+-----------------
+
+::
+
+    collection.limit(10, 5) # Limit to 10 results, starting after the 5th one.
 
 
 Finally, Fetch the Results
@@ -51,7 +50,7 @@ collection, all pre wrapped in a RethinkModel object.
 -------------------------------
 
 .. autoclass:: rethinkORM.rethinkCollection.RethinkCollection
-    :members: __init__, joinOn, joinOnAs, orderBy, fetch
+    :members: __init__, order_by, limit, fetch
     :undoc-members:
     :noindex:
 
