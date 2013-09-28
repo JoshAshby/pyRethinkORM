@@ -1,0 +1,10 @@
+This has the potential to break some backwards compatibility with v0.2.0 and below
+1. Several names have changed, primarily: protectedItems is now protected_items, primaryKey is now primary_key, orderBy in collections is now order_by. There are probably others that I'm missing however.
+2. The ability to join tables or models within a collection have been removed for now.
+3. The find classmethod on models has been removed.
+4. fromRawEntry is not outdated, and can be replaced by just instantiating a new model with the data.
+5. The models no longer keep track of if a document is new and just use the RethinkDB drivers upsert ability to insert or update a document.
+6. Passing a key and data will now no longer raise an exception, but instead return a new model.
+7. Providing only id as a keyword argument to the model will cause it to assume the document is in the database, and it will attempt to get that document.
+8. Most documentation has been updated for these changes however there are still several undoc'd or poorly doc'd functions hanging out in the code. See: http://rethinkorm.readthedocs.org/en/dev/ for more information.
+9. Like the documentation, there are a few functionality items that are missing tests.

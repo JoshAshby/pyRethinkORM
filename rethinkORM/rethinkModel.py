@@ -28,9 +28,6 @@ class RethinkModel(object):
     durability = "soft"
     """Can either be Hard or Soft, and is passed to RethinkDB"""
 
-    non_atomic = False
-    """Determins if the transaction can be non atomic or not"""
-
     def __init__(self, id=None, **kwargs):
         """
         Initializes the main object, if `id` is the only thing passed then we

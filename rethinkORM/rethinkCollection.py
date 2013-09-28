@@ -21,11 +21,17 @@ class RethinkCollection(object):
         Instantiates a new collection, using the given models table, and
         wrapping all documents with the given model.
 
-        Filter can be a dictionary or lambda, similar to the filters for the
-        RethinkDB drivers filters.
+        Filter can be a dictionary of keys to filter by, a lambda or a similar
+        statement, see:
+        `RethinkDB Filters <http://www.rethinkdb.com/api/#py:selecting_data-filter>`__
+        for more information
 
         A pre built query can also be passed in, to allow for better control
         of what documents get included in the final collection.
+
+        :param model: A RethinkModel object to be used to wrap all documents in
+        :param filter: If provided, it will be passed using the ReQL .filter command
+        :param query: An optional pre built ReQL query to be used
         """
         self._model = model
 
@@ -38,16 +44,19 @@ class RethinkCollection(object):
             self._filter = filter
             self._query = self._query.filter(self._filter)
 
-    def order_by(self, field, direct="desc"):
+    def order_by(self, key, direction="desc"):
         """
         Allows for the results to be ordered by a specific field. If given,
         direction can be set with passing an additional argument in the form
         of "asc" or "desc"
+
+        :param key: The key to sort by
+        :param direction: The direction, DESC or ASC to sort by
         """
-        if direct == "desc":
-            self._query = self._query.order_by(r.desc(field))
+        if direction.lower() == "desc":
+            self._query = self._query.order_by(r.desc(key))
         else:
-            self._query = self._query.order_by(r.asc(field))
+            self._query = self._query.order_by(r.asc(key))
 
         return self
 
@@ -55,12 +64,20 @@ class RethinkCollection(object):
         """
         Limits the results to the given offset (0 if not given) and the stated
         limit.
+
+        :param limit: The number of documents that the results should be limited to
+        :param offset: The number of documents to skip
         """
         self._query = self._query.limit(limit).skip(offset)
 
     def filter(self, filters):
         """
-        Allows for the addition of more filters to the resuls.
+        Allows for the addition of more filters to the results.
+
+        Filter can be a dictionary of keys to filter by, a lambda or a similar
+        statement, see:
+        `RethinkDB Filters <http://www.rethinkdb.com/api/#py:selecting_data-filter>`__
+        for more information
         """
         self._query = self._query.filter(filters)
 
@@ -71,10 +88,19 @@ class RethinkCollection(object):
         for doc in self._documents:
             yield doc
 
+    def __getitem__(self, index):
+        assert isinstance(index, int)
+        return self._documents[index]
+
     def fetch(self):
         """
-        Fetches the query and then tries to wrap the data in the model, joining
-        as needed, if applicable.
+        Fetches the query results and wraps the documents in the collections model.
+
+        Documents can then be accessed through the standard collection[index]
+        or with a for loop:
+
+        for doc in collection:
+            pass
         """
         returnResults = []
 
