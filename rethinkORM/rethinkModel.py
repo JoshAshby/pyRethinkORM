@@ -174,6 +174,9 @@ name exists in data""")
         """
         Update or insert the document into the database.
         """
+        if self.primary_key in self._data and not self._data[self.primary_key]:
+            self._data.pop(self.primary_key)
+
         reply = r.table(self.table) \
             .insert(self._data,
                     upsert=True,
