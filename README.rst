@@ -1,4 +1,4 @@
-RethinkORM v0.2.0
+RethinkORM v0.2.1
 =================
 
 Build status - Master:
