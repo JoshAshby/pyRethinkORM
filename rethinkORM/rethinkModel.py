@@ -252,7 +252,7 @@ name exists in data""")
             data = self._data.copy()
             ID = data.pop(self.primaryKey)
             reply = r.table(self.table).get(ID) \
-                .update(self._data,
+                .update(data,
                         durability=self.durability,
                         non_atomic=self.non_atomic) \
                 .run(self._conn)
