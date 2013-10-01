@@ -61,10 +61,9 @@ class RethinkModel(object):
 
         # If we're given a connection, we'll use it, if not, we'll assume
         # .repl() was called on r.connect()
-        if hasattr(kwargs, "conn") or hasattr(kwargs, "connection"):
-            self._conn = kwargs["conn"]
+        self._conn = kwargs.pop("conn", kwargs.pop("connection", None))
 
-        key = kwargs[self.primaryKey] if self.primaryKey in kwargs else id
+        key = kwargs.get(self.primaryKey, id)
 
         if key is None or key == "" and len(kwargs) == 0:
             raise Exception("""Cannot have an empty or type None key""")
