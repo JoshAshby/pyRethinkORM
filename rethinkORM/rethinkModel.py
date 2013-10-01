@@ -88,7 +88,8 @@ arguments while searching for Documents.""")
     def _makeNew(self, kwargs):
         # We assume this is a new object, and that we'll insert it
         for key in kwargs:
-            if key not in ["conn", "connection"] or key[0] != "_":
+            if key not in object.__getattribute__(self, "_protectedItems") \
+                   or key[0] != "_":
                 self._data[key] = kwargs[key]
 
     def _grabData(self, key):
@@ -248,7 +249,9 @@ name exists in data""")
         insert or update.
         """
         if not self._new:
-            reply = r.table(self.table) \
+            data = self._data.copy()
+            ID = data.pop(self.primaryKey)
+            reply = r.table(self.table).get(ID) \
                 .update(self._data,
                         durability=self.durability,
                         non_atomic=self.non_atomic) \
