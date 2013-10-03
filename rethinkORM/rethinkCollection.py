@@ -68,7 +68,7 @@ class RethinkCollection(object):
         :param limit: The number of documents that the results should be limited to
         :param offset: The number of documents to skip
         """
-        self._query = self._query.limit(limit).skip(offset)
+        self._query = self._query.skip(offset).limit(limit)
 
     def filter(self, filters):
         """

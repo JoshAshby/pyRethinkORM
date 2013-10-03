@@ -25,6 +25,8 @@ rethinkdb_data
 docs/_build
 dist
 MANIFEST
+cover/
+.coverage
 
 # Compiled source #
 ###################
