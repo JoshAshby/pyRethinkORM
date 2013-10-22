@@ -11,11 +11,6 @@ class RethinkCollection(object):
     in an iterable storage object, with each document represented by
     `RethinkModel` objects
     """
-    documents = []
-    _model = None
-    _query = None
-    _filter = {}
-
     def __init__(self, model, filter=None, query=None):
         """
         Instantiates a new collection, using the given models table, and
@@ -33,6 +28,8 @@ class RethinkCollection(object):
         :param filter: If provided, it will be passed using the ReQL .filter command
         :param query: An optional pre built ReQL query to be used
         """
+        self._documents = []
+        self._filter = {}
         self._model = model
 
         if query:
@@ -110,3 +107,10 @@ class RethinkCollection(object):
 
         self._documents = returnResults
         return self._documents
+
+    @property
+    def documents(self):
+        if self._documents:
+            return self._documents
+        else:
+            return self.fetch()
