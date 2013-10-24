@@ -1,8 +1,65 @@
 #!/usr/bin/env python
 """
-ORM style interface for working with RethinkDB and having a native wrapper and
-some helper functions for working with the wrapper. This module contains
-the base model which should be inherited.
+This module provides the RethinkModel class which provides a base class that
+works as a mapper between a rethink document and a Python object.
+
+First, lets setup the basic rethink connection and get a sample database and
+table made.
+I choose to go with this option, and providing an option for passing the
+connection object into the models because I don't quite like the ORMs which
+try to fully replace the underlying driver. This also gives a nice easy way
+to use standard ReQL for operations that are beyond the scope of the models.
+>>> import rethinkdb as r
+>>> import rethinkORM.rethinkModel as rm
+>>> import rethinkORM.rethinkCollection as rc
+>>> conn = r.connect('localhost', 28015)
+>>> a = r.db_create("test").run(conn)
+>>> conn.use("test")
+>>> conn.repl() #doctest: +ELLIPSIS
+<rethinkdb.net.Connection ...>
+
+>>> a = r.table_create("stargates").run()
+
+Now we can create a model that we'll be working with.
+>>> class Stargate(rm.RethinkModel):
+...   table = "stargates"
+
+And now we can create an actual document using this model.
+Create is a classmethod that will return a new Stargate object with the ID
+of the newly created document, with the passed data. In this case: location,
+and description.
+>>> earth_gate = Stargate.create(location="Earth", description="The first of\
+ two gates found on earth. Found in Egypt")
+
+If you do not call .repl() on the rethinkdb connection, you can also pass conn
+to the model like so:
+>>> earth_gate = Stargate.create(location="Earth", description="The first of\
+ two gates found on earth. Found in Egypt", connection=conn)
+
+If you did not want to immediately save the document upon creation you can
+instead call the .new() classmethod:
+>>> atlantis_gate = Stargate.new(location="City of Atlantis", description="The\
+ gate in the gate room of the lost city of the ancients, reached from\
+ Earth by using a ZPM and dialling an additional 9th symbol.")
+
+You can then make changes to this document, and when you are finished,
+call save() which will save the document and set the objects ID to the newly
+created documents ID.
+>>> atlantis_gate.save()
+True
+
+Getting a collection of documents is also easy through the use of
+RethinkCollection. Simply give RethinkCollection the classref of your model,
+in our case `Stargate` and look at the documents property. This will fetch
+all of the documents within the table defined by the Stargate model
+(`stargates` in this case). RethinkCollection also provides several helpers
+such as accepting a pre built ReQL query, limiting of results, sorting the
+documents and filtering them based off of field values.
+>>> gates = rc.RethinkCollection(Stargate)
+>>> gates.documents #doctest: +ELLIPSIS
+[<RethinkModel.Stargate ...>, <RethinkModel.Stargate ...>]
+
+>>> a = r.db_drop("test").run()
 """
 import rethinkdb as r
 
@@ -207,7 +264,7 @@ name exists in data""")
         """
         Allows for the representation of the object, for debugging purposes
         """
-        return "< %s at %s with data: %s >" % (self.__class__.__name__,
+        return "<RethinkModel.%s at %s with data: %s >" % (self.__class__.__name__,
                                                id(self),
                                                self._data)
 

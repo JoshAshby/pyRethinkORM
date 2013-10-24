@@ -1,3 +1,41 @@
+#!/usr/bin/env python
+"""
+This module is a temporary module to demonstrate and provide a testing ground
+for implimenting a relationship based system within the RethinkModel class.
+
+>>> import rethinkdb as r
+>>> import rethinkORM.rethinkRelation as rr
+>>> conn = r.connect('localhost', 28015)
+>>> a = r.db_create("model").run(conn)
+>>> conn.use("model")
+>>> conn.repl() #doctest: +ELLIPSIS
+<rethinkdb.net.Connection ...>
+
+>>> a = r.table_create("comments").run()
+>>> a = r.table_create("posts").run()
+
+>>> class Comment(rr.RethinkRelation):
+...   table = "comments"
+
+>>> class Post(rr.RethinkRelation):
+...   table = "posts"
+...   has_many = [Comment]
+
+>>> p = Post.create(title="Rising", body="The city of Atlantis comes to life\
+ as the special Stargate team arives in the gate room.") #doctest: +ELLIPSIS
+
+>>> p #doctest: +ELLIPSIS
+<RethinkRelation.Post ...>
+
+>>> p.comments.create(author="O'Niell", comment="That's O'Niell, with two\
+ l's!") #doctest: +ELLIPSIS
+<RethinkRelation.comments ...>
+
+>>> p.comments.all() #doctest: +ELLIPSIS
+<RethinkCollection ...>
+
+>>> a = r.db_drop("model").run()
+"""
 import rethinkModel as rm
 import rethinkCollection as rc
 
@@ -21,17 +59,6 @@ class RethinkRelation(rm.RethinkModel):
   Must be a list, and can be filled with classrefs for the models that
   this model has many of. The name of the property on the parent object will
   be the childs name, lowercased with an appended `s`
-
-  >>> class Comment:
-        table = "comments"
-
-  >>> class Post:
-        table = "posts"
-        has_many = [Comment]
-
-  >>> p = Post.create(title="Rising", body="The city of Atlantis comes to life\
-          as the special Stargate team arives in the gate room.")
-  >>> p.comments.all()
   """
 
   def finish_init(self):
@@ -96,3 +123,11 @@ class RethinkRelation(rm.RethinkModel):
     Helper method to return a RethinkCollection with the given search.
     """
     return rc.RethinkCollection(cls, {field: value})
+
+  def __repr__(self):
+    """
+    Allows for the representation of the object, for debugging purposes
+    """
+    return "<RethinkRelation.%s at %s with data: %s >" % (self.__class__.__name__,
+                                           id(self),
+                                           self._data)
