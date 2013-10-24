@@ -14,4 +14,4 @@ install:
 
 before_script: rethinkdb --daemon
 
-script: nosetests rethinkORM
+script: nosetests --with-doctest rethinkORM
