@@ -89,6 +89,13 @@ class RethinkCollection(object):
         assert isinstance(index, int)
         return self._documents[index]
 
+
+    def __repr__(self):
+        """
+        Allows for the representation of the object, for debugging purposes
+        """
+        return "<RethinkCollection at %s>" % (id(self))
+
     def fetch(self):
         """
         Fetches the query results and wraps the documents in the collections model.
