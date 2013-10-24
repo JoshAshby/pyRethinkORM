@@ -36,6 +36,7 @@ for implimenting a relationship based system within the RethinkModel class.
 
 >>> a = r.db_drop("example").run()
 """
+import rethinkdb as r
 import rethinkModel as rm
 import rethinkCollection as rc
 
@@ -51,7 +52,7 @@ class RethinkRelation(rm.RethinkModel):
   setting and working with that key to ensure that things run smoothly.
   """
 
-  #has_one = []
+  has_one = []
   has_many = []
   """
   Defines a relationship of one parent to many children documents
@@ -71,7 +72,10 @@ class RethinkRelation(rm.RethinkModel):
     """
     self._set_keys_later = []
     def build_relation_class(wat, plural=False):
-      data = {"foreign_key": self.id}
+      data = {
+        "foreign_key": self.id,
+        "_conn": self._conn
+      }
       if not plural:
         data.update({"unique": True})
 
@@ -81,13 +85,14 @@ class RethinkRelation(rm.RethinkModel):
           name += "s"
 
         temp_class = type(name, (obj,), data)
-        self._set(name, temp_class)
+        if plural:
+          self._set(name, temp_class)
+
+        else:
+          self._set(name, temp_class.get())
+
         self.protected_items = name
         self._set_keys_later.append(name)
-
-    #if self.has_one is not None:
-      #assert type(self.has_one) is list
-      #build_relation_class(self.has_one)
 
     if self.has_many is not None:
       assert type(self.has_many) is list
@@ -96,9 +101,6 @@ class RethinkRelation(rm.RethinkModel):
   def save(self):
     if hasattr(self, "foreign_key"):
       self._data["foreign_key"] = self.foreign_key
-
-    #if hasattr(self, "unique"):
-      #pass # TODO: Do some fancy, arcanie, black magic to make this remain unique
 
     super(RethinkRelation, self).save()
 
@@ -124,10 +126,24 @@ class RethinkRelation(rm.RethinkModel):
     """
     return rc.RethinkCollection(cls, {field: value})
 
+  @classmethod
+  def get(cls, ID=None):
+    if ID is not None:
+      res = r.table(cls.table).get(ID).run(cls._conn)
+      return cls(**res)
+    else:
+      if hasattr(cls, "foreign_key") and cls.foreign_key is not None:
+        res = r.table(cls.table).filter({"foreign_key": cls.foreign_key}).run(cls._conn)
+        return cls(**res)
+      else:
+        raise Exception("No foreign key present and no ID given.\
+ Can't find a document from nothing.")
+
+
   def __repr__(self):
     """
     Allows for the representation of the object, for debugging purposes
     """
     return "<RethinkRelation.%s at %s with data: %s >" % (self.__class__.__name__,
-                                           id(self),
-                                           self._data)
+                                                          id(self),
+                                                          self._data)

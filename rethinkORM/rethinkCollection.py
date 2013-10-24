@@ -11,7 +11,10 @@ class RethinkCollection(object):
     in an iterable storage object, with each document represented by
     `RethinkModel` objects
     """
-    def __init__(self, model, filter=None, query=None):
+    _conn = None
+
+
+    def __init__(self, model, filter=None, query=None, conn=None):
         """
         Instantiates a new collection, using the given models table, and
         wrapping all documents with the given model.
@@ -31,6 +34,8 @@ class RethinkCollection(object):
         self._documents = []
         self._filter = {}
         self._model = model
+        if conn:
+            self._conn = conn
 
         if query:
             self._query = query
@@ -108,7 +113,7 @@ class RethinkCollection(object):
         """
         returnResults = []
 
-        results = self._query.run()
+        results = self._query.run(self._conn)
         for result in results:
             returnResults.append(self._model(**result))
 

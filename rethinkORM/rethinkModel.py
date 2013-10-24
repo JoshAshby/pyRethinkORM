@@ -265,8 +265,8 @@ name exists in data""")
         Allows for the representation of the object, for debugging purposes
         """
         return "<RethinkModel.%s at %s with data: %s >" % (self.__class__.__name__,
-                                               id(self),
-                                               self._data)
+                                                           id(self),
+                                                           self._data)
 
     @property
     def protected_items(self):
