@@ -13,8 +13,8 @@ to use standard ReQL for operations that are beyond the scope of the models.
 >>> import rethinkORM.rethinkModel as rm
 >>> import rethinkORM.rethinkCollection as rc
 >>> conn = r.connect('localhost', 28015)
->>> a = r.db_create("test").run(conn)
->>> conn.use("test")
+>>> a = r.db_create("example").run(conn)
+>>> conn.use("example")
 >>> conn.repl() #doctest: +ELLIPSIS
 <rethinkdb.net.Connection ...>
 
@@ -59,7 +59,7 @@ documents and filtering them based off of field values.
 >>> gates.documents #doctest: +ELLIPSIS
 [<RethinkModel.Stargate ...>, <RethinkModel.Stargate ...>]
 
->>> a = r.db_drop("test").run()
+>>> a = r.db_drop("example").run()
 """
 import rethinkdb as r
 

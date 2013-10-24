@@ -6,8 +6,8 @@ for implimenting a relationship based system within the RethinkModel class.
 >>> import rethinkdb as r
 >>> import rethinkORM.rethinkRelation as rr
 >>> conn = r.connect('localhost', 28015)
->>> a = r.db_create("model").run(conn)
->>> conn.use("model")
+>>> a = r.db_create("example").run(conn)
+>>> conn.use("example")
 >>> conn.repl() #doctest: +ELLIPSIS
 <rethinkdb.net.Connection ...>
 
@@ -34,7 +34,7 @@ for implimenting a relationship based system within the RethinkModel class.
 >>> p.comments.all() #doctest: +ELLIPSIS
 <RethinkCollection ...>
 
->>> a = r.db_drop("model").run()
+>>> a = r.db_drop("example").run()
 """
 import rethinkModel as rm
 import rethinkCollection as rc

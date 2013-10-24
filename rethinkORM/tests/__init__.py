@@ -10,8 +10,8 @@ def setup():
     `model`.
     """
     conn = r.connect('localhost', 28015)
-    r.db_create("model").run(conn)
-    conn.use("model")
+    r.db_create("stargate").run(conn)
+    conn.use("stargate")
     conn.repl()
     r.table_create("stargates").run()
     r.table_create("episodes").run()
@@ -21,4 +21,4 @@ def teardown():
     Drops the whole `model` database, since it's no longer needed now that
     the tests are done.
     """
-    r.db_drop("model").run()
+    r.db_drop("stargate").run()
