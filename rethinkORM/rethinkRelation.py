@@ -13,26 +13,40 @@ for implimenting a relationship based system within the RethinkModel class.
 
 >>> a = r.table_create("comments").run()
 >>> a = r.table_create("posts").run()
+>>> a = r.table_create("authors").run()
 
 >>> class Comment(rr.RethinkRelation):
 ...   table = "comments"
 
+>>> class Date(rr.RethinkRelation):
+...   table = "dates"
+
 >>> class Post(rr.RethinkRelation):
 ...   table = "posts"
 ...   has_many = [Comment]
+...   has_one = [Date]
 
->>> p = Post.create(title="Rising", body="The city of Atlantis comes to life\
+>>> class Author(rr.RethinkRelation):
+...   table = "authors"
+...   has_many = [Post]
+
+>>> auth = Author.create(name="Daniel Jackson") #doctest: +ELLIPSIS
+
+>>> p = auth.posts.create(title="Rising", body="The city of Atlantis comes to life\
  as the special Stargate team arives in the gate room.") #doctest: +ELLIPSIS
-
->>> p #doctest: +ELLIPSIS
-<RethinkRelation.Post ...>
 
 >>> p.comments.create(author="O'Niell", comment="That's O'Niell, with two\
  l's!") #doctest: +ELLIPSIS
 <RethinkRelation.comments ...>
 
 >>> p.comments.all() #doctest: +ELLIPSIS
-<RethinkCollection ...>
+<RethinkCollection.comments ...>
+
+>>> auth.posts.all() #doctest: +ELLIPSIS
+<RethinkCollection.posts ...>
+
+>>> auth.all() #doctest: +ELLIPSIS
+<RethinkCollection.Author ...>
 
 >>> a = r.db_drop("example").run()
 """
@@ -52,7 +66,7 @@ class RethinkRelation(rm.RethinkModel):
   setting and working with that key to ensure that things run smoothly.
   """
 
-  has_one = []
+  #has_one = []
   has_many = []
   """
   Defines a relationship of one parent to many children documents
@@ -120,11 +134,11 @@ class RethinkRelation(rm.RethinkModel):
       return rc.RethinkCollection(cls)
 
   @classmethod
-  def find(cls, field, value):
+  def find(cls, **kwargs):
     """
     Helper method to return a RethinkCollection with the given search.
     """
-    return rc.RethinkCollection(cls, {field: value})
+    return rc.RethinkCollection(cls, kwargs)
 
   @classmethod
   def get(cls, ID=None):
@@ -138,7 +152,6 @@ class RethinkRelation(rm.RethinkModel):
       else:
         raise Exception("No foreign key present and no ID given.\
  Can't find a document from nothing.")
-
 
   def __repr__(self):
     """

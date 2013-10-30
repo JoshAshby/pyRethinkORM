@@ -99,7 +99,8 @@ class RethinkCollection(object):
         """
         Allows for the representation of the object, for debugging purposes
         """
-        return "<RethinkCollection at %s>" % (id(self))
+        return "<RethinkCollection.%s at %s>" % (self._model.__name__,
+                                                 id(self))
 
     def fetch(self):
         """
