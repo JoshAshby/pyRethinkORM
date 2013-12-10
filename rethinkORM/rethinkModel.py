@@ -119,6 +119,8 @@ class RethinkModel(object):
           rawCursor = r.table(self.table).get(key).run(self._conn)
           if rawCursor:
               self._data = dict(rawCursor)
+          else:
+              raise Exception("No document found for id: "+str(key))
 
         else:
             for item in kwargs:
