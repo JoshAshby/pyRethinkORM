@@ -10,18 +10,17 @@ class baseCollection_test(object):
     def normalCollection_test(self):
         one = gateModel.create(**baseData)
         two = gateModel.create(**newData)
-        parts = [two, one]
+
+        record_ids = [one.id, two.id]
 
         collection = RethinkCollection(gateModel)
 
         results = collection.fetch()
         assert len(results) == 2
-        for model in range(len(results)):
-            bit = parts[model]
-            model = results[model]
 
-            assert model.id == bit.id
-            assert model.what == bit.what
+        result_ids = [model.id for model in results]
+        for record_id in record_ids:
+            assert record_id in result_ids
 
         one.delete()
         two.delete()
