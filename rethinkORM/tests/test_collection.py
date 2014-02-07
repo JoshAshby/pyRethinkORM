@@ -51,6 +51,55 @@ class baseCollection_orderBy_test(object):
         four.delete()
 
 
+class baseCollection_limit_test(object):
+    def limit_test(self):
+        one = gateModel.create(**baseData)
+        two = gateModel.create(**newData)
+        three = gateModel.create(**limitData)
+
+        collection = RethinkCollection(gateModel)
+        results = collection.fetch(limit=2)
+        assert len(results) == 2
+
+        one.delete()
+        two.delete()
+        three.delete()
+
+
+class baseCollection_offset_test(object):
+    def offset_test(self):
+        one = gateModel.create(**baseData)
+        two = gateModel.create(**newData)
+        three = gateModel.create(**limitData)
+
+        collection = RethinkCollection(gateModel)
+        collection.order_by('episodes')
+        results = collection.fetch(offset=1)
+        assert len(results) == 2
+        assert results[0].id == three.id
+
+        one.delete()
+        two.delete()
+        three.delete()
+
+
+class baseCollection_limit_offset_test(object):
+    def limit_offset_test(self):
+        one = gateModel.create(**baseData)
+        two = gateModel.create(**newData)
+        three = gateModel.create(**limitData)
+
+        collection = RethinkCollection(gateModel)
+        collection.order_by('episodes')
+        results = collection.fetch(limit=1, offset=2)
+        assert len(results) == 1
+        assert results[0].id == two.id
+
+        one.delete()
+        two.delete()
+        three.delete()
+
+
 class baseCollection_filtering_test(object):
     """
     TODO: tests for:

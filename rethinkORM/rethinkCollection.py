@@ -102,9 +102,10 @@ class RethinkCollection(object):
         return "<RethinkCollection.%s at %s>" % (self._model.__name__,
                                                  id(self))
 
-    def fetch(self):
+    def fetch(self, limit=None, offset=None):
         """
         Fetches the query results and wraps the documents in the collections model.
+        A specific slice of documents can be fetched with limit and offset kw params.
 
         Documents can then be accessed through the standard collection[index]
         or with a for loop:
@@ -113,6 +114,11 @@ class RethinkCollection(object):
             pass
         """
         returnResults = []
+
+        if offset:
+            self._query = self._query.skip(offset)
+        if limit:
+            self._query = self._query.limit(limit)
 
         results = self._query.run(self._conn)
         for result in results:

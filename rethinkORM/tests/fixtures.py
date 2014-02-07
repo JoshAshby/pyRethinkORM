@@ -34,6 +34,15 @@ newData = {
     "episodes": 2,
     }
 
+limitData = {
+    "what": "Zero Point Module",
+    "description": """A power source built by the Ancients, utilizing Zero
+    point energy, it is the cleanest energy source in the known universe""",
+    "id": "ZPM",
+    "planet": "Proclarush",
+    "episodes": 44
+    }
+
 classmethodData = {
     "what": "Lost City, Part 1",
     "description": """The SG1 team finds an abandoned ancient statue which
