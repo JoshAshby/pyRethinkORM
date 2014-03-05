@@ -72,6 +72,8 @@ class RethinkCollection(object):
         """
         self._query = self._query.skip(offset).limit(limit)
 
+        return self
+
     def filter(self, filters):
         """
         Allows for the addition of more filters to the results.
@@ -82,6 +84,8 @@ class RethinkCollection(object):
         for more information
         """
         self._query = self._query.filter(filters)
+
+        return self
 
     def __len__(self):
         return len(self._documents)

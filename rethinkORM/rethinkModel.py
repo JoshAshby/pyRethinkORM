@@ -173,16 +173,16 @@ name exists in data""")
         return object.__setattr__(self, item, value)
 
     def __getattr__(self, item):
-        return self._get(item)
+        return object.__getattribute__(self, "_get")(item)
 
     def __getitem__(self, item):
-        return self._get(item)
+        return object.__getattribute__(self, "_get")(item)
 
     def __setattr__(self, item, value):
-        return self._set(item, value)
+        return object.__getattribute__(self, "_set")(item, value)
 
     def __setitem__(self, item, value):
-        return self._set(item, value)
+        return object.__getattribute__(self, "_set")(item, value)
 
     def __delitem__(self, item):
         """

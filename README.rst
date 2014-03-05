@@ -96,5 +96,15 @@ All code for this can be found online at
 If something is broken, or a feature is missing, please submit a pull request
 or open an issue. Most things I probably won't have time to get around to
 looking at too deeply, so if you want it fixed, a pull request is the way
-to go. Besides that, I'm releasing this under the GPLv3 License as found in the
+to go. In your pull request please provide an explaniation as to what your
+request is for, and what benefit it provides.
+
+Besides that, I'm releasing this under the GPLv3 License as found in the
 ``LICENSE.txt`` file. Enjoy!
+
+Thanks
+~~~~~~
+Shout outs to these people for contributing to the project:
+
+#. `scragg0x<https://github.com/scragg0x>`__
+#. `grieve<https://github.com/grieve>`__
