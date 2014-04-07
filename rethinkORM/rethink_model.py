@@ -68,7 +68,7 @@ documents and filtering them based off of field values.
 
 >>> gates = RethinkCollection(Stargate)
 >>> gates.documents #doctest: +ELLIPSIS
-[<RethinkModel.Stargate ...>, <RethinkModel.Stargate ...>]
+[<RethinkModel ...>, <RethinkModel ...>]
 
 >>> a = r.db_drop("example").run()
 """
