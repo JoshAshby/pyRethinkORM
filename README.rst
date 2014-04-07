@@ -1,13 +1,12 @@
 RethinkORM v1.0.0 - DEV
 =======================
 
-Master:
 
-.. image:: http://img.shields.io/travis/JoshAshby/pyRethinkORM/master.svg
+.. image:: https://img.shields.io/travis/JoshAshby/pyRethinkORM/master.svg
     :target: http://travis-ci.org/JoshAshby/pyRethinkORM
     :alt: Travis-Ci build status
 
-.. image:: http://img.shields.io/coveralls/JoshAshby/pyRethinkORM/master.svg
+.. image:: https://img.shields.io/coveralls/JoshAshby/pyRethinkORM/master.svg
     :target: https://coveralls.io/r/JoshAshby/pyRethinkORM
     :alt: Coveralls test coverage
 
@@ -19,15 +18,10 @@ Master:
     :target: https://pypi.python.org/pypi/RethinkORM/
     :alt: Number of PyPI downloads
 
-.. image:: http://img.shields.io/gittip/JoshAshby.svg
+.. image:: https://img.shields.io/gittip/JoshAshby.svg
     :target: https://www.gittip.com/JoshAshby
     :alt: JoshAshby's Gittip donations
 
-Dev:
-
-.. image:: http://img.shields.io/travis/JoshAshby/pyRethinkORM/dev.svg
-    :target: http://travis-ci.org/JoshAshby/pyRethinkORM
-    :alt: Travis-ci dev branch build status
 
 RethinkORM is a small wrapper class to help make working with documents in
 `RethinkDB <http://www.rethinkdb.com/>`__ easier, and in a more Pythonic way.
