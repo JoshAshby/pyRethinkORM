@@ -1,7 +1,5 @@
-..  _collections:
-
-RethinkCollection
-=================
+:class:`RethinkCollection`
+==========================
 
 Collections provide a quick and easy way to interact with many documents of the
 same type all at once. They also provide a mechanism for basic joins across one
@@ -42,21 +40,11 @@ Finally, Fetch the Results
 
     result = collection.fetch()
 
-Result acts like a List, containing all of the Documents which are part of the
+`result` acts like a List, containing all of the Documents which are part of the
 collection, all pre wrapped in a RethinkModel object.
 
 
-:mod:`rethinkCollection` Module
--------------------------------
-
-.. autoclass:: rethinkORM.rethinkCollection.RethinkCollection
+.. autoclass:: rethinkORM.RethinkCollection
     :members: __init__, order_by, limit, fetch
     :undoc-members:
     :noindex:
-
-Subpackages
------------
-
-.. toctree::
-
-    rethinkORM.tests

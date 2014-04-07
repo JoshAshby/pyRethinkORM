@@ -1,7 +1,5 @@
-..  _model:
-
-RethinkModel
-============
+:class:`RethinkModel`
+=====================
 
 The model is the core of everything RethinkORM deals with. All data returned
 from RethinkDB is eventually wrapped in the model before being returned to the
@@ -61,10 +59,8 @@ Deleting an entry
     oldProp.delete()
 
 
-:mod:`rethinkModel` Module
---------------------------
 
-.. autoclass:: rethinkORM.rethinkModel.RethinkModel
+.. autoclass:: rethinkORM.RethinkModel
     :members: __init__, finish_init, __delitem__, __contains__, new, create, save, delete, __repr__, protected_items, primary_key, table, durability, non_atomic
     :undoc-members:
     :noindex:

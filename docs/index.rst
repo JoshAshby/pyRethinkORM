@@ -1,52 +1,38 @@
-RethinkORM: Introduction
-========================
+RethinkORM v1.0.0
+=================
 
-Build status - Master:
+Master:
 
+.. image:: http://img.shields.io/travis/JoshAshby/pyRethinkORM/master.svg
+    :target: http://travis-ci.org/JoshAshby/pyRethinkORM
 
-.. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=master
-        :target: http://travis-ci.org/JoshAshby/pyRethinkORM
-
-.. image:: https://pypip.in/v/RethinkORM/badge.png
-    :target: https://crate.io/packages/RethinkORM/
+.. image:: https://img.shields.io/pypi/v/RethinkORM.svg
+    :target: https://pypi.python.org/pypi/RethinkORM/
     :alt: Latest PyPI version
 
-.. image:: https://pypip.in/d/RethinkORM/badge.png
-    :target: https://crate.io/packages/RethinkORM/
+.. image:: https://img.shields.io/pypi/d/RethinkORM.svg
+    :target: https://pypi.python.org/pypi/RethinkORM/
     :alt: Number of PyPI downloads
 
+.. image:: http://img.shields.io/gittip/JoshAshby.svg
+    :target: https://www.gittip.com/JoshAshby
+    :alt: JoshAshby's Gittip donations
 
-Build status - Dev:
+Dev:
 
-
-.. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=dev
-        :target: http://travis-ci.org/JoshAshby/pyRethinkORM
+.. image:: http://img.shields.io/travis/JoshAshby/pyRethinkORM/dev.svg
+    :target: http://travis-ci.org/JoshAshby/pyRethinkORM
 
 
 RethinkORM is a small wrapper class to help make working with documents in
 `RethinkDB <http://www.rethinkdb.com/>`__ easier, and in a more Pythonic way.
 
-I recently found RethinkDB and was amazed at how easy everything seemed
-to be, however one thing that I've missed is how the data is just a
-Python ``List`` or ``Dict`` rather than a full wrapper class. So I
+When I found RethinkDB, I was amazed at how easy everything seemed
+to be, however one thing that I missed was how the data was just a
+Python `list` or `dict` rather than a full wrapper class. So I
 figured a good way to learn the general use of the Python RethinkDB
 driver was to write a general wrapper class that functioned a bit like
 an ORM, providing some easier to work with data and objects.
-
-Unittests are included, and the code should be `PEP8 
-<http://www.python.org/dev/peps/pep-0008/>`__ compliant. The tests are
-automatically ran each commit, thanks to `travis-ci.org
-<http://travis-ci.org>`__ and this documentation is kindly hosted and
-automatically rebuilt by `readthedocs.org <http://readthedocs.org>`__.
-
-Gittip if you like the work I do and would consider a small donation to help
-fund me and this project:
-
-.. raw:: html
-
-    <iframe style="border: 0; margin: 0; padding: 0;"
-        src="https://www.gittip.com/JoshAshby/widget.html"
-        width="48pt" height="22pt"></iframe>
 
 Changes from Version 0.2.0
 --------------------------
@@ -96,20 +82,9 @@ a simple ``pip`` command to install.
 
 Quick Start
 -----------
-There are currently two main modules to this package, Models and Collections.
 
-`Models <model.html>`__
-~~~~~~~~~~~~~~~~~~~~~~~~
-The core of RethinkORM, models are the main unit of code you'll probably be use
-from this package.
+.. automodule:: rethinkORM.rethink_model
 
-`Collections <collections.html>`__
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-New in v0.2.0 are collections. These are containers for interacting with sets
-of documents. Collections provide an easy way to gather up just the documents
-you need, and have them automatically wrapped with the ORM RethinkModel object.
-
-You can read more about `collections here <collections.html>`__.
 
 Versioning
 ~~~~~~~~~~
@@ -127,8 +102,17 @@ looking at too deeply, so if you want it fixed, a pull request is the way
 to go. In your pull request please provide an explaniation as to what your
 request is for, and what benefit it provides.
 
-Besides that, I'm releasing this under the GPLv3 License as found in the
+Unittests are included, and the code should be mostly `PEP8 
+<http://www.python.org/dev/peps/pep-0008/>`__ compliant. The tests are
+automatically ran each commit, thanks to `travis-ci.org
+<http://travis-ci.org>`__ and this documentation is kindly hosted and
+automatically rebuilt by `readthedocs.org <http://readthedocs.org>`__.
+
+Besides that, I'm releasing this under the MIT License as found in the
 ``LICENSE.txt`` file. Enjoy!
+
+.. warning::
+    The pre v1.0.0 releases were licensed under the GPL v3 License.
 
 Thanks
 ~~~~~~
@@ -143,10 +127,6 @@ Doc Contents
 .. toctree::
    :maxdepth: 4
 
-   model
-   collections
-   rethinkORM.tests
-   rethinkORM
 
 
 Indices and tables
