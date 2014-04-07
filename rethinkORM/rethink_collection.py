@@ -13,7 +13,6 @@ class RethinkCollection(object):
     """
     _conn = None
 
-
     def __init__(self, model, filter=None, query=None, conn=None):
         """
         Instantiates a new collection, using the given models table, and
@@ -51,6 +50,9 @@ class RethinkCollection(object):
         Allows for the results to be ordered by a specific field. If given,
         direction can be set with passing an additional argument in the form
         of "asc" or "desc"
+
+        .. warning::
+            In pre v1.0.0 releases, this was named `orderBy`
 
         :param key: The key to sort by
         :param direction: The direction, DESC or ASC to sort by
@@ -103,18 +105,18 @@ class RethinkCollection(object):
         """
         Allows for the representation of the object, for debugging purposes
         """
-        return "<RethinkCollection.%s at %s>" % (self._model.__name__,
-                                                 id(self))
+        return "<RethinkCollection of model: %s at %s>" % (self._model.__name__,
+                                                           id(self))
 
     def fetch(self):
         """
         Fetches the query results and wraps the documents in the collections model.
 
-        Documents can then be accessed through the standard collection[index]
-        or with a for loop:
+        Documents can then be accessed through the standard `collection[index]`
+        or with a `for` loop::
 
-        for doc in collection:
-            pass
+            for doc in collection:
+                pass
         """
         returnResults = []
 

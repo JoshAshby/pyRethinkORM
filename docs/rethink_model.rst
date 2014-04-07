@@ -1,17 +1,12 @@
-:class:`RethinkModel`
-=====================
-
+Models
+======
 The model is the core of everything RethinkORM deals with. All data returned
 from RethinkDB is eventually wrapped in the model before being returned to the
 end user. It provides an pythonic, object style interface for the data,
 exposing methods to save and update documents along with creating new ones.
 
-Quick Start:
-------------
-
-::
-
-    pip install RethinkORM
+General Usage
+-------------
 
 First we need to make an object which will represent all of our data in
 a specific table, along with getting a connection to RethinkDB started.
@@ -27,10 +22,6 @@ a specific table, along with getting a connection to RethinkDB started.
     class tvProps(RethinkModel):
         table = "stargate_props"
 
-
-For more information on what class properties are available to change, see
-:ref:`rethinkORM`
-
 Inserting/creating an entry
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -45,7 +36,7 @@ Updating an entry
 ::
 
     updatedProp = tvProps("DHD_P3X_439")
-    updatedProp.description="""Dial Home Device from the planel P3X-439, where an
+    updatedProp.description = """Dial Home Device from the planel P3X-439, where an
         Ancient Repository of Knowledge was found, and interfaced with by Colonel
         Jack."""
     updatedProp.save()
@@ -58,9 +49,15 @@ Deleting an entry
     oldProp = tvProps("DHD_P3X_439")
     oldProp.delete()
 
+:class:`RethinkORMException`
+----------------------------
 
+.. autoclass:: rethinkORM.RethinkORMException
+
+:class:`RethinkModel`
+---------------------
 
 .. autoclass:: rethinkORM.RethinkModel
-    :members: __init__, finish_init, __delitem__, __contains__, new, create, save, delete, __repr__, protected_items, primary_key, table, durability, non_atomic
+    :members: __init__, finish_init, __delitem__, __contains__, new, create, save, delete, __repr__, protected_items, primary_key, table, durability
     :undoc-members:
     :noindex:

@@ -1,14 +1,18 @@
 #!/usr/bin/env python
 """
-This module provides the RethinkModel class which provides a base class that
-works as a mapper between a rethink document and a Python object.
+This library provides the :py:class:`.RethinkModel` class which provides a
+base class that works as a mapper between a rethink document and a Python
+object, along with the :py:class:`.RethinkCollection` class to represent a
+group of documents which match a ReQL query.
 
 First, lets setup the basic rethink connection and get a sample database and
 table made.
-I choose to go with this option, and providing an option for passing the
-connection object into the models because I don't quite like the ORMs which
+I choose to go with this pattern, providing an option for passing the
+connection object into the models, because I don't quite like the ORMs which
 try to fully replace the underlying driver. This also gives a nice easy way
-to use standard ReQL for operations that are beyond the scope of the models.
+to use standard ReQL for operations that are beyond the scope of what these
+models are for.
+
 >>> import rethinkdb as r
 >>> from rethinkORM import RethinkModel
 >>> from rethinkORM import RethinkCollection
@@ -21,40 +25,47 @@ to use standard ReQL for operations that are beyond the scope of the models.
 >>> a = r.table_create("stargates").run()
 
 Now we can create a model that we'll be working with.
+
 >>> class Stargate(RethinkModel):
 ...   table = "stargates"
 
 And now we can create an actual document using this model.
-Create is a classmethod that will return a new Stargate object with the ID
-of the newly created document, with the passed data. In this case: location,
-and description.
+Create is a classmethod that will return a new `Stargate` object with the ID
+of the newly created document, with the passed data. In this case: `location`,
+and `description`.
+
 >>> earth_gate = Stargate.create(location="Earth", description="The first of\
  two gates found on earth. Found in Egypt")
 
-If you do not call .repl() on the rethinkdb connection, you can also pass conn
+If you do not call `.repl()` on the rethink connection, you can also pass conn
 to the model like so:
+
 >>> earth_gate = Stargate.create(location="Earth", description="The first of\
  two gates found on earth. Found in Egypt", connection=conn)
 
 If you did not want to immediately save the document upon creation you can
-instead call the .new() classmethod:
+instead call the `.new()` classmethod:
+
 >>> atlantis_gate = Stargate.new(location="City of Atlantis", description="The\
  gate in the gate room of the lost city of the ancients, reached from\
  Earth by using a ZPM and dialling an additional 9th symbol.")
 
 You can then make changes to this document, and when you are finished,
-call save() which will save the document and set the objects ID to the newly
+call `.save()` which will save the document and set the objects ID to the newly
 created documents ID.
+
 >>> atlantis_gate.save()
 True
 
 Getting a collection of documents is also easy through the use of
-RethinkCollection. Simply give RethinkCollection the classref of your model,
-in our case `Stargate` and look at the documents property. This will fetch
-all of the documents within the table defined by the Stargate model
-(`stargates` in this case). RethinkCollection also provides several helpers
+:py:class:`.RethinkCollection`. Simply give :py:class:`.RethinkCollection`
+the classref of your model, in our case `Stargate` and look at the documents
+property. This will fetch all of the documents within the table defined by
+the `Stargate` model (the `stargates` table in this case).
+:py:class:`.RethinkCollection` also provides several helpers
 such as accepting a pre built ReQL query, limiting of results, sorting the
 documents and filtering them based off of field values.
+
 >>> gates = RethinkCollection(Stargate)
 >>> gates.documents #doctest: +ELLIPSIS
 [<RethinkModel.Stargate ...>, <RethinkModel.Stargate ...>]
@@ -62,25 +73,27 @@ documents and filtering them based off of field values.
 >>> a = r.db_drop("example").run()
 """
 import rethinkdb as r
+from .rethinkorm_exception import RethinkORMException
 
 
 class RethinkModel(object):
     """
-    Emulates a python object for the  data which is returned from rethinkdb and
-    the official Python client driver. Raw data from the database is stored in
-    _data to keep the objects namespace clean. For more information look at how
-    _get() and _set() function in order to keep the namespace cleaner but still
-    provide easy access to data.
-
-    This object has a __repr__ method which can be used with print or logging
-    statements. It will give the id and a representation of the internal _data
-    dict for debugging purposes.
+    This mostly emulates a basic python `object` for the returned data from
+    RethinkDB. You can use both attribute access and item access to interact
+    with the data.
     """
     _protected_items = []
     _conn = None
 
     table = ""  #: The table which this document object will be stored in
-    primary_key = "id"  #: The current primary key of the table
+    primary_key = "id"
+    """
+    The current primary key in use on the table. This defaults to `id` as
+    RethinkDB will default to using `id` as the primary key.
+
+    .. warning::
+        In pre v1.0.0 releases, this was called `primaryKey`
+    """
 
     durability = "soft"
     """Can either be Hard or Soft, and is passed to RethinkDB"""
@@ -91,8 +104,9 @@ class RethinkModel(object):
         assume this document is already in the database and grab its data,
         otherwise we treat it as a new object.
 
-        (Optional, only if not using .repl()) `conn` or `connection` can also
-        be passed, which will be used in all the .run() clauses.
+        (Optional, only if not using `.repl()` on the rethink connection)
+        `conn` or `connection` can also be passed, which will be used in all
+        the `.run()` clauses.
         """
 
         protected_items = dir(self)
@@ -120,7 +134,7 @@ class RethinkModel(object):
           if rawCursor:
               self._data = dict(rawCursor)
           else:
-              raise Exception("No document found for id: "+str(key))
+              raise RethinkORMException("No document found for id: "+str(key))
 
         else:
             for item in kwargs:
@@ -168,7 +182,7 @@ class RethinkModel(object):
                 keys[item] = value
                 return value
             if hasattr(value, '__call__') and item in keys:
-                raise Exception("""Cannot set model data to a function, same \
+                raise RethinkORMException("""Cannot set model data to a function, same \
 name exists in data""")
         return object.__setattr__(self, item, value)
 
@@ -246,7 +260,7 @@ name exists in data""")
             self._data[self.primary_key] = reply["generated_keys"][0]
 
         if "errors" in reply and reply["errors"] > 0:
-            raise Exception("Could not insert entry: %s"
+            raise RethinkORMException("Could not insert entry: %s"
                             % reply["first_error"])
 
         return True
@@ -260,21 +274,22 @@ name exists in data""")
                 .delete(durability=self.durability).run(self._conn)
             return True
         else:
-            raise Exception("Document id not given, cannot delete.")
+            raise RethinkORMException("Document id not given, cannot delete.")
 
     def __repr__(self):
         """
         Allows for the representation of the object, for debugging purposes
         """
-        return "<RethinkModel.%s at %s with data: %s >" % (self.__class__.__name__,
-                                                           id(self),
-                                                           self._data)
+        return "<RethinkModel at %s with data: %s >" % (id(self), self._data)
 
     @property
     def protected_items(self):
         """
         Provides a cleaner interface to dynamically add items to the models
-        list of protected functions to not store in the database
+        list of protected functions to not store in the database.
+
+        .. warning::
+            In the pre v1.0.0 releases, this was called `protectedItems`
         """
         return self._protected_items
 

@@ -1,34 +1,40 @@
 RethinkORM v1.0.0 - DEV
 =======================
 
-Build status - Master:
+Master:
 
+.. image:: http://img.shields.io/travis/JoshAshby/pyRethinkORM/master.svg
+    :target: http://travis-ci.org/JoshAshby/pyRethinkORM
+    :alt: Travis-Ci build status
 
-.. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=master
-        :target: http://travis-ci.org/JoshAshby/pyRethinkORM
+.. image:: http://img.shields.io/coveralls/JoshAshby/pyRethinkORM/master.svg
+    :target: https://coveralls.io/r/JoshAshby/pyRethinkORM
+    :alt: Coveralls test coverage
 
-.. image:: https://pypip.in/v/RethinkORM/badge.png
-    :target: https://crate.io/packages/RethinkORM/
+.. image:: https://img.shields.io/pypi/v/RethinkORM.svg
+    :target: https://pypi.python.org/pypi/RethinkORM/
     :alt: Latest PyPI version
 
-.. image:: https://pypip.in/d/RethinkORM/badge.png
-    :target: https://crate.io/packages/RethinkORM/
+.. image:: https://img.shields.io/pypi/d/RethinkORM.svg
+    :target: https://pypi.python.org/pypi/RethinkORM/
     :alt: Number of PyPI downloads
 
+.. image:: http://img.shields.io/gittip/JoshAshby.svg
+    :target: https://www.gittip.com/JoshAshby
+    :alt: JoshAshby's Gittip donations
 
-Build status - Dev:
+Dev:
 
-
-.. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=dev
-        :target: http://travis-ci.org/JoshAshby/pyRethinkORM
-
+.. image:: http://img.shields.io/travis/JoshAshby/pyRethinkORM/dev.svg
+    :target: http://travis-ci.org/JoshAshby/pyRethinkORM
+    :alt: Travis-ci dev branch build status
 
 RethinkORM is a small wrapper class to help make working with documents in
 `RethinkDB <http://www.rethinkdb.com/>`__ easier, and in a more Pythonic way.
 
-I recently found RethinkDB and was amazed at how easy everything seemed
-to be, however one thing that I've missed is how the data is just a
-Python ``List`` or ``Dict`` rather than a full wrapper class. So I
+When I found RethinkDB, I was amazed at how easy everything seemed
+to be, however one thing that I missed was how the data was just a
+Python `list` or `dict` rather than a full wrapper class. So I
 figured a good way to learn the general use of the Python RethinkDB
 driver was to write a general wrapper class that functioned a bit like
 an ORM, providing some easier to work with data and objects.
@@ -36,28 +42,27 @@ an ORM, providing some easier to work with data and objects.
 Changes from Version 0.2.0
 --------------------------
 
+#. Relicensed from GPL v3 to MIT.
 #. Several names have changed, primarially: `protectedItems` is now
    `protected_items`, `primaryKey` is now `primary_key`, `orderBy` in collections is now `order_by`. There are probably others that I'm missing however.
 #. The ability to join tables or models within a collection have been removed
-   for now.
-#. The find classmethod on models has been removed.
-#. fromRawEntry is now outdated, and can be replaced by just instantiating a
+   for now (it was mostly broken anyways).
+#. The find classmethod on models has been removed (For now, until I come up
+   with a better way of doing this).
+#. `fromRawEntry` is not outdated, and can be replaced by just instantiating a
    new model with the data.
 #. The models no longer keep track of if a document is new and just use the
    RethinkDB drivers `upsert` ability to insert or update a document.
 #. Passing a key and data will now no longer raise an exception, but instead
-   return a new model that will overwrite any previous document with the same
-   key/id.
+   return a new model.
 #. Providing only `id` as a keyword argument to the model will cause it to
    assume the document is in the database, and it will attempt to get that
    document.
-#. Tests have been moved out of the package directory.
 
 A Few Minor Warnings
 --------------------
 
-#. I'm only a second year university student, and software
-   isn't even my major; I'm working towards an Electrical and Computer
+#. I am a second year university student working towards a Computer
    Engineering degree, so not only do I have limited time to keep this
    maintained, but I also probably won't write the best code ever.
 #. This takes some influence from the `Python Django RethinkDB 
@@ -66,17 +71,9 @@ A Few Minor Warnings
    for this module. If someone wants to make this more standardized feel
    free to, and just submit a pull request, I'll look it over and probably
    will give it the go ahead. For more information see below.
-#. This is a very early release, things might break, and the code is honestly a
-   little childish at best. In other words: It'll hopefully get better, but it
-   might be a little limited right now.
-#. This project follows the semantic versioning specs. All Minor and
-   patch versions will not break the major versions API, however an bump of the
-   major version signifies that backwards compatibility will most likely be
-   broken.
-
-
-Documentation
-=============
+#. While this is now on its second major version, the code is still maturing a
+   bit so chances are stuff will still break. Again, see below for information
+   about contributing patches or features.
 
 Installation:
 -------------
@@ -99,14 +96,41 @@ If something is broken, or a feature is missing, please submit a pull request
 or open an issue. Most things I probably won't have time to get around to
 looking at too deeply, so if you want it fixed, a pull request is the way
 to go. In your pull request please provide an explaniation as to what your
-request is for, and what benefit it provides.
+request is for, and what benefit it provides. Also please try to follow `PEP8 
+<http://www.python.org/dev/peps/pep-0008/>`__ as best a possible.
 
-Besides that, I'm releasing this under the GPLv3 License as found in the
+Unittests are included in the `tests/` directory and are ran every commit
+thanks to `travis-ci.org <http://travis-ci.org>`__ and this documentation
+is kindly hosted and automatically rebuilt by `readthedocs.org
+<http://readthedocs.org>`__. Test coverage is also provided by `coveralls.io
+<https://coveralls.io/>`__.
+
+If you would like to run the tests on your own all you have to do is::
+
+    nosetests
+
+.. note::
+    Tests require nose and coverage to be installed.
+
+License
+-------
+This is released this under the MIT License as found in the
 ``LICENSE.txt`` file. Enjoy!
+
+.. warning::
+    Heads up, version 1.0.0 has a different license than previous releases: The
+    pre v1.0.0 releases were licensed under the GPL v3 License.
+
+Versioning
+~~~~~~~~~~
+This project will try to follow the semantic versioning guide lines, as laid
+out here: `SemVer <http://semver.org/>`__, as best as possible.
 
 Thanks
 ~~~~~~
 Shout outs to these people for contributing to the project:
 
-#. `scragg0x<https://github.com/scragg0x>`__
-#. `grieve<https://github.com/grieve>`__
+#. `scragg0x <https://github.com/scragg0x>`__
+#. `grieve <https://github.com/grieve>`__
+
+
