@@ -3,7 +3,7 @@
 Test suite for the model
 """
 import nose.tools as nst
-from rethinkORM.tests.fixtures import *
+from .fixtures import *
 
 
 class base(object):

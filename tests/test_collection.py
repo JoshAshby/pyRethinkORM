@@ -2,8 +2,8 @@
 """
 Test suite for the model
 """
-from rethinkORM.tests.fixtures import *
-from rethinkORM.rethinkCollection import RethinkCollection
+from .fixtures import *
+from rethinkORM import RethinkCollection
 
 
 class baseCollection_test(object):

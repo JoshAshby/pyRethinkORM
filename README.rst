@@ -41,15 +41,17 @@ Changes from Version 0.2.0
 #. The ability to join tables or models within a collection have been removed
    for now.
 #. The find classmethod on models has been removed.
-#. fromRawEntry is not outdated, and can be replaced by just instantiating a
+#. fromRawEntry is now outdated, and can be replaced by just instantiating a
    new model with the data.
 #. The models no longer keep track of if a document is new and just use the
    RethinkDB drivers `upsert` ability to insert or update a document.
 #. Passing a key and data will now no longer raise an exception, but instead
-   return a new model.
+   return a new model that will overwrite any previous document with the same
+   key/id.
 #. Providing only `id` as a keyword argument to the model will cause it to
    assume the document is in the database, and it will attempt to get that
    document.
+#. Tests have been moved out of the package directory.
 
 A Few Minor Warnings
 --------------------

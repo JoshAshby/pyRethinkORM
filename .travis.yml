@@ -9,9 +9,8 @@ before_install:
   - sudo apt-get install rethinkdb -y
 
 install:
-  - pip install -r requirements.txt --use-mirrors
   - pip install . --use-mirrors
 
 before_script: rethinkdb --daemon
 
-script: nosetests --with-doctest rethinkORM
+script: nosetests

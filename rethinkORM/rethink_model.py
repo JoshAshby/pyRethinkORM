@@ -10,8 +10,8 @@ connection object into the models because I don't quite like the ORMs which
 try to fully replace the underlying driver. This also gives a nice easy way
 to use standard ReQL for operations that are beyond the scope of the models.
 >>> import rethinkdb as r
->>> import rethinkORM.rethinkModel as rm
->>> import rethinkORM.rethinkCollection as rc
+>>> from rethinkORM import RethinkModel
+>>> from rethinkORM import RethinkCollection
 >>> conn = r.connect('localhost', 28015)
 >>> a = r.db_create("example").run(conn)
 >>> conn.use("example")
@@ -21,7 +21,7 @@ to use standard ReQL for operations that are beyond the scope of the models.
 >>> a = r.table_create("stargates").run()
 
 Now we can create a model that we'll be working with.
->>> class Stargate(rm.RethinkModel):
+>>> class Stargate(RethinkModel):
 ...   table = "stargates"
 
 And now we can create an actual document using this model.
@@ -55,7 +55,7 @@ all of the documents within the table defined by the Stargate model
 (`stargates` in this case). RethinkCollection also provides several helpers
 such as accepting a pre built ReQL query, limiting of results, sorting the
 documents and filtering them based off of field values.
->>> gates = rc.RethinkCollection(Stargate)
+>>> gates = RethinkCollection(Stargate)
 >>> gates.documents #doctest: +ELLIPSIS
 [<RethinkModel.Stargate ...>, <RethinkModel.Stargate ...>]
 

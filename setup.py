@@ -1,18 +1,37 @@
-from distutils.core import setup
-import rethinkORM
+from setuptools import setup
+
+version = '1.0.0'
+
+testing_extras = ['nose', 'coverage']
+
+docs_extras = ['Sphinx']
 
 setup(
     name='RethinkORM',
-    version=rethinkORM.__version__,
-    author='Joshua P Ashby',
-    author_email='joshuaashby@joshashby.com',
-    packages=['rethinkORM', 'rethinkORM.tests'],
-    url='https://github.com/JoshAshby/pyRethinkORM',
-    license='GPL v3 (See LICENSE.txt for more info)',
+    version=version,
     description='Useful little ORM style wrapper for working with RethinkDB',
     long_description=open('README.rst').read(),
-    install_requires=[
-        "rethinkdb >= 1.7.0",
-        "nose >= 1.3.0"
+    classifiers=[
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 2.6",
     ],
+    author='Joshua P Ashby',
+    author_email='joshuaashby@joshashby.com',
+    maintainer='Joshua P Ashby',
+    url='https://github.com/JoshAshby/pyRethinkORM/',
+    license='MIT',
+    zip_safe=True,
+    packages=['rethinkORM'],
+    install_requires=[
+        "rethinkdb >= 1.7.0"
+    ],
+    test_suite='nose.collector',
+    tests_require=['nose'],
+    extras_require = {
+        'testing':testing_extras,
+        'docs':docs_extras,
+    }
 )
