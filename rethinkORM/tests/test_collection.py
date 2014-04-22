@@ -97,6 +97,35 @@ class baseCollection_orderBy_test(object):
         four.delete()
 
 
+class baseCollection_offset_test(object):
+    def offset_test(self):
+        one = gateModel.create(**baseData)
+        two = gateModel.create(**newData)
+        three = gateModel.create(**newData2)
+
+        offsetValue = 1
+
+        collection = RethinkCollection(gateModel)
+        results = collection.fetch()
+        totalRows = len(results)
+
+        collection.offset(offsetValue)
+        results = collection.fetch()
+        offsetRows = len(results)
+
+        assert offsetRows == (totalRows - offsetValue)
+
+        collection = RethinkCollection(gateModel)
+        collection.orderBy('episodes').offset(offsetValue)
+        results = collection.fetch()
+        if len(results) > 1:
+            assert results[0].episodes > results[1].episodes
+
+        one.delete()
+        two.delete()
+        three.delete()
+
+
 class baseCollection_filtering_test(object):
     """
     TODO: tests for:

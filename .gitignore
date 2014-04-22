@@ -25,6 +25,7 @@ rethinkdb_data
 docs/_build
 dist
 MANIFEST
+venv/
 
 # Compiled source #
 ###################
