@@ -126,6 +126,36 @@ class baseCollection_offset_test(object):
         three.delete()
 
 
+class baseCollection_limit_test(object):
+    def limit_test(self):
+        one = gateModel.create(**baseData)
+        two = gateModel.create(**newData)
+        three = gateModel.create(**newData2)
+
+        limitValue = 2
+
+        collection = RethinkCollection(gateModel)
+        collection.limit(limitValue)
+        results = collection.fetch()
+
+        assert len(results) <= limitValue
+
+        if limitValue > 1:
+            collection = RethinkCollection(gateModel)
+            collection.orderBy('episodes', 'asc').limit(limitValue)
+            results = collection.fetch()
+            assert results[0].episodes < results[1].episodes
+
+            collection = RethinkCollection(gateModel)
+            collection.orderBy('episodes', 'asc').offset(1).limit(limitValue)
+            results = collection.fetch()
+            assert results[0].episodes < results[1].episodes
+
+        one.delete()
+        two.delete()
+        three.delete()
+
+
 class baseCollection_filtering_test(object):
     """
     TODO: tests for:
