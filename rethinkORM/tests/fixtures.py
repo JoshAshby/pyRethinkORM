@@ -34,6 +34,15 @@ newData = {
     "episodes": 2,
     }
 
+newData2 = {
+    "what": "Star Gate",
+    "description": """Device used to form a wormhole to another gate and
+    transport matter.""",
+    "id": "StarGate-Earthx",
+    "planet": "Earth",
+    "episodes": 3,
+    }
+
 classmethodData = {
     "what": "Lost City, Part 1",
     "description": """The SG1 team finds an abandoned ancient statue which

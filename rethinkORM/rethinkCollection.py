@@ -81,6 +81,25 @@ class RethinkCollection(object):
         for doc in self._documents:
             yield doc
 
+    def offset(self, value):
+        """
+        Allows for skipping a specified number of results in query. Useful
+        for pagination.
+        """
+
+        self._query = self._query.skip(value)
+
+        return self
+
+    def limit(self, value):
+        """
+        Allows for limiting number of results returned for query. Useful
+        for pagination.
+        """
+        self._query = self._query.limit(value)
+
+        return self
+
     # Pagination helpers...
     # These are questionable, on if I'll put them in or not.
     #def paginate(self, start,finish):
