@@ -26,6 +26,8 @@ docs/_build
 dist
 MANIFEST
 venv/
+.coverage
+cover/
 
 # Compiled source #
 ###################

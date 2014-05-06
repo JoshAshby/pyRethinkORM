@@ -110,6 +110,15 @@ to go. Besides that, I'm releasing this under the GPLv3 License as found in the
 ``LICENSE.txt`` file. Enjoy!
 
 
+Thanks
+~~~~~~
+Shout outs to these people for contributing to the project:
+
+#. `scragg0x <https://github.com/scragg0x>`__
+#. `grieve <https://github.com/grieve>`__
+#. `justinrsmith <https://github.com/justinrsmith>`__
+
+
 Doc Contents
 ------------
 
