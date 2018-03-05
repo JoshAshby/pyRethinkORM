@@ -7,11 +7,11 @@ Build status - Master:
 .. image:: https://secure.travis-ci.org/JoshAshby/pyRethinkORM.png?branch=master
         :target: http://travis-ci.org/JoshAshby/pyRethinkORM
 
-.. image:: https://pypip.in/v/RethinkORM/badge.png
+.. image:: https://img.shields.io/pypi/v/RethinkORM.svg
     :target: https://crate.io/packages/RethinkORM/
     :alt: Latest PyPI version
 
-.. image:: https://pypip.in/d/RethinkORM/badge.png
+.. image:: https://img.shields.io/pypi/dm/RethinkORM.svg
     :target: https://crate.io/packages/RethinkORM/
     :alt: Number of PyPI downloads
 
